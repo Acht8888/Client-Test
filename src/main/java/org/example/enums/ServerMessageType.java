@@ -1,0 +1,104 @@
+package org.example.enums;
+
+import java.util.Set;
+
+public enum ServerMessageType {
+    // ===== Connection =====
+    AUTH_SUCCESS,
+    AUTH_FAIL,
+    TOKEN_EXPIRED,
+    SESSION_RESTORED,
+
+    // ===== User Management =====
+    GET_USER_INFO,
+    GET_USER_BY_ID,
+
+    // Game state sync
+    GAME_STATE,
+    PLAYER_JOINED,
+    PLAYER_LEFT,
+    OBJECT_SPAWNED,
+    OBJECT_DESTROYED,
+    WORLD_UPDATE,
+    MATCH_STARTED,
+    MATCH_ENDED,
+
+    // Server instructions
+    FORCE_DISCONNECT,
+    ERROR_MESSAGE,
+    SERVER_NOTICE,
+    RECONNECT_PROMPT,
+
+    // Communication
+    CHAT_BROADCAST,
+    PRIVATE_MESSAGE,
+
+    // Friend
+    FRIEND_REQUEST,
+    FRIEND_ACCEPT,
+    FRIEND_DECLINE,
+
+    // Room
+    CREATE_ROOM,
+    GET_ROOM_BY_ID,
+    GET_ALL_ROOMS,
+    JOIN_ROOM,
+    LEAVE_ROOM,
+    UPDATE_ROOM,
+    DELETE_ROOM,
+    READY,
+    UNREADY,
+    START_GAME,
+
+    // Pings
+    PONG,
+    SERVER_TICK,
+
+    // Test
+    HELLO;
+
+    /**
+     * Messages that should be sent to all connected clients
+     */
+    public static final Set<ServerMessageType> BROADCAST_MESSAGES = Set.of(
+            CHAT_BROADCAST, SERVER_NOTICE, WORLD_UPDATE, MATCH_STARTED, MATCH_ENDED
+    );
+
+    /**
+     * High priority messages that should be processed immediately
+     */
+    public static final Set<ServerMessageType> HIGH_PRIORITY = Set.of(
+            FORCE_DISCONNECT, ERROR_MESSAGE, TOKEN_EXPIRED, RECONNECT_PROMPT
+    );
+
+    /**
+     * Game state messages that need to be synchronized
+     */
+    public static final Set<ServerMessageType> GAME_STATE_MESSAGES = Set.of(
+            GAME_STATE, PLAYER_JOINED, PLAYER_LEFT, OBJECT_SPAWNED,
+            OBJECT_DESTROYED, WORLD_UPDATE, MATCH_STARTED, MATCH_ENDED
+    );
+
+    /**
+     * System/heartbeat messages
+     */
+    public static final Set<ServerMessageType> SYSTEM_MESSAGES = Set.of(
+            PONG, SERVER_TICK, FORCE_DISCONNECT, RECONNECT_PROMPT
+    );
+
+    public boolean isBroadcast() {
+        return BROADCAST_MESSAGES.contains(this);
+    }
+
+    public boolean isHighPriority() {
+        return HIGH_PRIORITY.contains(this);
+    }
+
+    public boolean isGameState() {
+        return GAME_STATE_MESSAGES.contains(this);
+    }
+
+    public boolean isSystemMessage() {
+        return SYSTEM_MESSAGES.contains(this);
+    }
+}
