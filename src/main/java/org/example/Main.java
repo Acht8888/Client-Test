@@ -21,8 +21,8 @@ public class Main {
     private static final String HOST = "localhost";
     private static final int PORT = 9000;
 
-    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImMyZTA4MGFjLWUyM2MtNDdiMi04ODAyLWJkYzdjMTZmOGZiZiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUyODEyODQ4LCJleHAiOjE3NTI4OTkyNDh9.gnps6OTNr8jihhlwxkWTXElWUdZC_kC2hV_LXUIX5mc";
-    private final String jwtReconnect = "3WtvqltoJl6viXqx3-WuPy8QRfwbTGg9";
+    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMDMwNjE4LCJleHAiOjE3NTMxMTcwMTh9.meOzIOXGDkjpxvoUi1HROOf3q2ODfuMIXTJ9wbwMVBI";
+    private final String jwtReconnect = "9AoUqkTCUY5IEpku2_oEdh6hQnrZyQrg";
 
     private static final Random random = new Random();
     private static final JsonUtils jsonUtils = new JsonUtils();
@@ -50,8 +50,8 @@ public class Main {
         System.out.println("1. reconnect <token> <reconnect_token> - Reconnect with tokens");
         System.out.println("100. get_user_info - Get this user information");
         System.out.println("101. get_user_by_id - Get another user information");
-        System.out.println("1000. chat <targetId(s)> <message> - Send a chat message to another user");
-        System.out.println("1001. friend_request <targetId> - Send a friend request to another use");
+        System.out.println("1000. chat_with <targetId(s)> <message> - Send a chat message to another user");
+        System.out.println("1001. send_friend_request <targetId> - Send a friend request to another use");
         System.out.println("1002. accept_friend_request <requestId> - Accept friend request");
         System.out.println("1003. decline_friend_request <requestId> - Decline friend request");
         System.out.println("2000. create_room <roomName> <roomType> <maxPlayers> - Create a room");
@@ -97,14 +97,14 @@ public class Main {
 
                         handleGetUserById(userId);
                         break;
-                    case "chat":
+                    case "chat_with":
                         tokens = parts[1].split(" ", 2);
                         String targetIds = tokens[0];
                         String message = tokens[1];
 
                         handleChat(targetIds, message);
                         break;
-                    case "friend_request":
+                    case "send_friend_request":
                         String targetId = parts[1];
 
                         handleFriendRequest(targetId);
