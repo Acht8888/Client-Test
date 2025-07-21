@@ -3,6 +3,7 @@ package org.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import org.example.dtos.ServerFriendDTO;
 import org.example.dtos.ServerRoomDTO;
 import org.example.dtos.ServerUserDTO;
 import org.example.enums.ClientMessageType;
@@ -54,6 +55,7 @@ public class Main {
         System.out.println("1001. send_friend_request <targetId> - Send a friend request to another use");
         System.out.println("1002. accept_friend_request <requestId> - Accept friend request");
         System.out.println("1003. decline_friend_request <requestId> - Decline friend request");
+        System.out.println("1004. get_friend_requests - Get all friend requests");
         System.out.println("2000. create_room <roomName> <roomType> <maxPlayers> - Create a room");
         System.out.println("2101. get_room_by_id <roomId> - Get information for a room");
         System.out.println("2001. get_all_rooms - Get some information for all rooms");
@@ -118,6 +120,9 @@ public class Main {
                         requestId = parts[1];
 
                         handleDeclineFriendRequest(UUID.fromString(requestId));
+                        break;
+                    case "get_friend_requests":
+                        handleGetFriendRequests();
                         break;
                     case "create_room":
                         tokens = parts[1].split(" ");
@@ -298,9 +303,19 @@ public class Main {
         short methodCode = (short) ClientMessageType.DECLINE_FRIEND_REQUEST.ordinal();
         int messageId = random.nextInt(Integer.MAX_VALUE);
 
-
         Map<String, String> payloadMap = new HashMap<>();
         payloadMap.put("requestId", requestId.toString());
+
+        sendMessage(methodCode, messageId, payloadMap);
+    }
+
+    private void handleGetFriendRequests() throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal();
+        int messageId = random.nextInt(Integer.MAX_VALUE);
+
+        Map<String, String> payloadMap = new HashMap<>();
 
         sendMessage(methodCode, messageId, payloadMap);
     }
@@ -422,6 +437,8 @@ public class Main {
             processGetRooms(payloadStr);
         } else if (responseType == ServerMessageType.HELLO.ordinal()) {
             processTest(payloadStr);
+        } else if (responseType == ServerMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal()) {
+            processGetFriendRequests(payloadStr);
         }
     }
 
@@ -442,6 +459,18 @@ public class Main {
         String targetUsername = payloadStr.get("targetUsername");
 
         System.out.println(targetUsername + " has declined your friend request");
+    }
+
+    private void processGetFriendRequests(Map<String, String> payloadStr) throws Exception {
+        String serverFriendDTOListJsonString = payloadStr.get("pendingFriendRequests");
+
+        List<ServerFriendDTO> serverFriendDTOList = jsonUtils.convertJsonStringToObject(serverFriendDTOListJsonString, TypeFactory.defaultInstance().constructCollectionType(List.class, ServerFriendDTO.class));
+
+        System.out.println("[Pending Friend Requests]");
+
+        for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
+            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
+        }
     }
 
     private void processChat(Map<String, String> payloadStr) throws Exception {

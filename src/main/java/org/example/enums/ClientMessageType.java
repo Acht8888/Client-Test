@@ -36,6 +36,7 @@ public enum ClientMessageType {
     ACCEPT_FRIEND_REQUEST,
     DECLINE_FRIEND_REQUEST,
     REMOVE_FRIEND,
+    GET_PENDING_FRIEND_REQUESTS,
     GET_FRIEND_LIST,
 
     // ===== Player Actions =====

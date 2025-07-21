@@ -37,6 +37,8 @@ public enum ServerMessageType {
     FRIEND_REQUEST,
     FRIEND_ACCEPT,
     FRIEND_DECLINE,
+    GET_PENDING_FRIEND_REQUESTS,
+    GET_FRIEND_LIST,
 
     // Room
     CREATE_ROOM,
