@@ -22,7 +22,7 @@ public class Main {
     private static final String HOST = "localhost";
     private static final int PORT = 9000;
 
-    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMDMwNjE4LCJleHAiOjE3NTMxMTcwMTh9.meOzIOXGDkjpxvoUi1HROOf3q2ODfuMIXTJ9wbwMVBI";
+    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMDYxOTA0LCJleHAiOjE3NTMxNDgzMDR9.s_K-3vDj_YTKFrWoOGu3_PuuNGxtEkyYgC1crKX7B_Y";
     private final String jwtReconnect = "9AoUqkTCUY5IEpku2_oEdh6hQnrZyQrg";
 
     private static final Random random = new Random();
@@ -56,6 +56,7 @@ public class Main {
         System.out.println("1002. accept_friend_request <requestId> - Accept friend request");
         System.out.println("1003. decline_friend_request <requestId> - Decline friend request");
         System.out.println("1004. get_friend_requests - Get all friend requests");
+        System.out.println("1005. get_friend_list - Get friend list");
         System.out.println("2000. create_room <roomName> <roomType> <maxPlayers> - Create a room");
         System.out.println("2101. get_room_by_id <roomId> - Get information for a room");
         System.out.println("2001. get_all_rooms - Get some information for all rooms");
@@ -123,6 +124,9 @@ public class Main {
                         break;
                     case "get_friend_requests":
                         handleGetFriendRequests();
+                        break;
+                    case "get_friend_list":
+                        handleGetFriendList();
                         break;
                     case "create_room":
                         tokens = parts[1].split(" ");
@@ -320,6 +324,17 @@ public class Main {
         sendMessage(methodCode, messageId, payloadMap);
     }
 
+    private void handleGetFriendList() throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.GET_FRIEND_LIST.ordinal();
+        int messageId = random.nextInt(Integer.MAX_VALUE);
+
+        Map<String, String> payloadMap = new HashMap<>();
+
+        sendMessage(methodCode, messageId, payloadMap);
+    }
+
     private void handleCreateRoomRequest(String roomName, String roomType, String maxPlayers) throws Exception {
         if (!ensureConnection()) return;
 
@@ -439,6 +454,8 @@ public class Main {
             processTest(payloadStr);
         } else if (responseType == ServerMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal()) {
             processGetFriendRequests(payloadStr);
+        } else if (responseType == ServerMessageType.GET_FRIEND_LIST.ordinal()) {
+            processGetFriendList(payloadStr);
         }
     }
 
@@ -467,6 +484,18 @@ public class Main {
         List<ServerFriendDTO> serverFriendDTOList = jsonUtils.convertJsonStringToObject(serverFriendDTOListJsonString, TypeFactory.defaultInstance().constructCollectionType(List.class, ServerFriendDTO.class));
 
         System.out.println("[Pending Friend Requests]");
+
+        for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
+            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
+        }
+    }
+
+    private void processGetFriendList(Map<String, String> payloadStr) throws Exception {
+        String serverFriendDTOListJsonString = payloadStr.get("friendList");
+
+        List<ServerFriendDTO> serverFriendDTOList = jsonUtils.convertJsonStringToObject(serverFriendDTOListJsonString, TypeFactory.defaultInstance().constructCollectionType(List.class, ServerFriendDTO.class));
+
+        System.out.println("[Friend List]");
 
         for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
             System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
