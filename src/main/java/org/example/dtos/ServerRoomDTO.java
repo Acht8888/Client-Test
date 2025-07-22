@@ -2,8 +2,7 @@ package org.example.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.enums.RoomStatus;
-import org.example.enums.RoomType;
+import org.example.utils.BinarySerializer;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,16 +11,27 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ServerRoomDTO {
+    @BinarySerializer.FieldOrder(0)
     private UUID id;
 
     // Room details
+    @BinarySerializer.FieldOrder(1)
     private String name;
-    private RoomType type;
+
+    @BinarySerializer.FieldOrder(2)
+    private short type;
+
+    @BinarySerializer.FieldOrder(3)
     private int maxPlayers;
+
+    @BinarySerializer.FieldOrder(4)
     private int currentPlayers;
-    private RoomStatus status;
+
+    @BinarySerializer.FieldOrder(5)
+    private short status;
 
     // List of players
+    @BinarySerializer.FieldOrder(6)
     private List<UUID> playerIds;
 }
 

@@ -117,38 +117,35 @@ public class Main {
                     case "get_friend_list":
                         handleGetFriendList();
                         break;
-//                    case "create_room":
-//                        tokens = parts[1].split(" ");
-//                        String roomName = tokens[0];
-//                        String roomType = tokens[1];
-//                        String maxPlayers = tokens[2];
-//
-//                        handleCreateRoomRequest(roomName, roomType, maxPlayers);
-//                        break;
-//                    case "get_room_by_id":
-//                        String roomId = parts[1];
-//
-//                        handleGetRoomById(roomId);
-//                        break;
-//                    case "get_all_rooms":
-//                        handleGetRoomsRequest();
-//                        break;
-//                    case "join_room":
-//                        roomId = parts[1];
-//
-//                        handleJoinRoomRequest(roomId);
-//                        break;
-//                    case "leave_room":
-//                        roomId = parts[1];
-//
-//                        handleLeaveRoomRequest(roomId);
-//                        break;
-//                    case "disconnect":
-//                        handleDisconnect();
-//                        break;
-//                    case "test":
-//                        handleTest();
-//                        break;
+                    case "create_room":
+                        tokens = parts[1].split(" ");
+                        String roomName = tokens[0];
+                        String roomType = tokens[1];
+                        String maxPlayers = tokens[2];
+
+                        handleCreateRoomRequest(roomName, roomType, maxPlayers);
+                        break;
+                    case "get_room_by_id":
+                        String roomId = parts[1];
+
+                        handleGetRoomById(UUID.fromString(roomId));
+                        break;
+                    case "get_all_rooms":
+                        handleGetRoomsRequest();
+                        break;
+                    case "join_room":
+                        roomId = parts[1];
+
+                        handleJoinRoomRequest(UUID.fromString(roomId));
+                        break;
+                    case "leave_room":
+                        roomId = parts[1];
+
+                        handleLeaveRoomRequest(UUID.fromString(roomId));
+                        break;
+                    case "disconnect":
+                        handleDisconnect();
+                        break;
 //                    case "exit":
 //                        if (connected) {
 //                            handleDisconnect();
@@ -284,144 +281,116 @@ public class Main {
 
         sendMessage(methodCode, new byte[0]);
     }
-//
-//    private void handleCreateRoomRequest(String roomName, String roomType, String maxPlayers) throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.CREATE_ROOM.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("roomName", roomName);
-//        payloadMap.put("roomType", roomType);
-//        payloadMap.put("maxPlayers", maxPlayers);
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
-//
-//    private void handleGetRoomsRequest() throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.GET_ALL_ROOMS.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
-//
-//    private void handleGetRoomById(String roomId) throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.GET_ROOM_BY_ID.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("roomId", roomId);
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
-//
-//    private void handleJoinRoomRequest(String roomId) throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.JOIN_ROOM.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("roomId", roomId);
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
-//
-//    private void handleLeaveRoomRequest(String roomId) throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.LEAVE_ROOM.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("roomId", roomId);
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
-//
-//    private void handleDisconnect() throws Exception {
-//        if (!connected) {
-//            System.out.println("Not connected to server");
-//            return;
-//        }
-//
-//        short methodCode = (short) ClientMessageType.DISCONNECT.ordinal(); // Disconnect type
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//
-//        closeConnection();
-//    }
-//
-//    private void handleTest() throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.HELLO.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        String[] array = {"One", "Two", "Three", "Four"};
-//        List<String> arrayListStr = List.of(array);
-//        System.out.println("String[] array: " + arrayListStr);
-//
-//        String arrayConverted = jsonUtils.convertObjectToJsonString(array);
-//        System.out.println("arrayConverted: " + arrayConverted);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("str", arrayConverted);
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
-//
+
+    private void handleCreateRoomRequest(String roomName, String roomType, String maxPlayers) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.CREATE_ROOM.ordinal();
+
+        short roomTypeShort = 0;
+        if (roomType.equalsIgnoreCase("public")) {
+            roomTypeShort = 0;
+        } else if (roomType.equalsIgnoreCase("private")) {
+            roomTypeShort = 1;
+        }
+
+        ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, roomTypeShort, Integer.parseInt(maxPlayers));
+
+        byte[] serializedData = BinarySerializer.serializeData(clientCreateRoomDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
+
+    private void handleGetRoomsRequest() throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.GET_ALL_ROOMS.ordinal();
+
+        sendMessage(methodCode, new byte[0]);
+    }
+
+    private void handleGetRoomById(UUID roomId) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.GET_ROOM_BY_ID.ordinal();
+
+        ClientGetRoomByIdDTO getRoomByIdDTO = new ClientGetRoomByIdDTO(roomId);
+
+        byte[] serializedData = BinarySerializer.serializeData(getRoomByIdDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
+
+    private void handleJoinRoomRequest(UUID roomId) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.JOIN_ROOM.ordinal();
+
+        ClientJoinRoomDTO clientJoinRoomDTO = new ClientJoinRoomDTO(roomId);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientJoinRoomDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
+
+    private void handleLeaveRoomRequest(UUID roomId) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.LEAVE_ROOM.ordinal();
+
+        ClientLeaveRoomDTO clientLeaveRoomDTO = new ClientLeaveRoomDTO(roomId);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientLeaveRoomDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
+
+    private void handleDisconnect() throws Exception {
+        if (!connected) {
+            System.out.println("Not connected to server");
+            return;
+        }
+
+        short methodCode = (short) ClientMessageType.DISCONNECT.ordinal();
+
+        sendMessage(methodCode, new byte[0]);
+
+        closeConnection();
+    }
+
     private void processServerMessage(short responseType, byte[] payloadBytes) throws Exception {
         if (responseType == ServerMessageType.AUTH_SUCCESS.ordinal()) {
             ServerAuthSuccessDTO serverAuthSuccessDTO = BinarySerializer.deserializeData(payloadBytes, ServerAuthSuccessDTO.class);
 
-            System.out.println("[Server message]");
+            System.out.println("[Auth Success]");
             System.out.println("- Response: " + serverAuthSuccessDTO.getResponse());
             System.out.println("- Reconnect Token: " + serverAuthSuccessDTO.getReconnectToken());
         } else if (responseType == ServerMessageType.AUTH_FAIL.ordinal()) {
             ServerAuthFailDTO serverAuthFailDTO = BinarySerializer.deserializeData(payloadBytes, ServerAuthFailDTO.class);
 
-            System.out.println("[Server message]");
+            System.out.println("[Auth Fail]");
             System.out.println("- Response: " + serverAuthFailDTO.getResponse());
         } else if (responseType == ServerMessageType.FRIEND_REQUEST.ordinal()) {
             processFriendRequest(payloadBytes);
-        }
-        else if (responseType == ServerMessageType.FRIEND_ACCEPT.ordinal()) {
+        } else if (responseType == ServerMessageType.FRIEND_ACCEPT.ordinal()) {
             processAcceptFriendRequest(payloadBytes);
-        }
-        else if (responseType == ServerMessageType.FRIEND_DECLINE.ordinal()) {
+        } else if (responseType == ServerMessageType.FRIEND_DECLINE.ordinal()) {
             processDeclineFriendRequest(payloadBytes);
-        }
-        else if (responseType == ServerMessageType.PRIVATE_MESSAGE.ordinal()) {
+        } else if (responseType == ServerMessageType.PRIVATE_MESSAGE.ordinal()) {
             processChat(payloadBytes);
-        }
-        else if (responseType == ServerMessageType.GET_USER_INFO.ordinal()) {
+        } else if (responseType == ServerMessageType.GET_USER_INFO.ordinal()) {
             processGetUserInfo(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_BY_ID.ordinal()) {
             processGetUserById(payloadBytes);
-        }
-//        else if (responseType == ServerMessageType.CREATE_ROOM.ordinal()) {
-//            processCreateRoom(payloadStr);
-//        } else if (responseType == ServerMessageType.JOIN_ROOM.ordinal()) {
-//            processJoinRoom(payloadStr);
-//        } else if (responseType == ServerMessageType.GET_ROOM_BY_ID.ordinal()) {
-//            processGetRoomById(payloadStr);
-//        } else if (responseType == ServerMessageType.GET_ALL_ROOMS.ordinal()) {
-//            processGetRooms(payloadStr);
-//        } else if (responseType == ServerMessageType.HELLO.ordinal()) {
-//            processTest(payloadStr);
-//        }
-        else if (responseType == ServerMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal()) {
+        } else if (responseType == ServerMessageType.CREATE_ROOM.ordinal()) {
+            processCreateRoom(payloadBytes);
+        } else if (responseType == ServerMessageType.JOIN_ROOM.ordinal()) {
+            processJoinRoom(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_ROOM_BY_ID.ordinal()) {
+            processGetRoomById(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_ALL_ROOMS.ordinal()) {
+            processGetRooms(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal()) {
             processGetFriendRequests(payloadBytes);
         } else if (responseType == ServerMessageType.GET_FRIEND_LIST.ordinal()) {
             processGetFriendList(payloadBytes);
@@ -474,13 +443,7 @@ public class Main {
             System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
         }
     }
-//
-//    private void processChat(Map<String, String> payloadStr) throws Exception {
-//        String chatMessage = payloadStr.get("chatMessage");
-//
-//        System.out.println("Chat: " + chatMessage);
-//    }
-//
+
     private void processGetUserInfo(byte[] payloadBytes) throws Exception {
         ServerUserDTO serverUserDTO = BinarySerializer.deserializeData(payloadBytes, ServerUserDTO.class);
 
@@ -507,47 +470,45 @@ public class Main {
         System.out.println("[Chatting]");
         System.out.println("- Message: " + serverChatDTO.getChatMessage());
     }
-//
-//    private void processCreateRoom(Map<String, String> payloadStr) {
-//        UUID roomId = UUID.fromString(payloadStr.get("roomId"));
-//
-//        System.out.println("The new server Id is: " + roomId);
-//    }
-//
-//    private void processJoinRoom(Map<String, String> payloadStr) {
-//        UUID roomId = UUID.fromString(payloadStr.get("roomId"));
-//
-//        System.out.println("The server Id is: " + roomId);
-//    }
-//
-//    private void processGetRoomById(Map<String, String> payloadStr) {
-//        String serverRoomDTOJsonString = payloadStr.get("room");
-//
-//        ServerRoomDTO serverRoomDTO = jsonUtils.convertJsonStringToObject(serverRoomDTOJsonString, TypeFactory.defaultInstance().constructType(ServerRoomDTO.class));
-//
-//        System.out.println("[Room]");
-//
-//        System.out.println("- " + serverRoomDTO.getId() + " " + serverRoomDTO.getName());
-//    }
-//
-//    private void processGetRooms(Map<String, String> payloadStr) {
-//        String serverRoomDTOListJsonString = payloadStr.get("rooms");
-//
-//        List<ServerRoomDTO> serverRoomDTOList = jsonUtils.convertJsonStringToObject(serverRoomDTOListJsonString, TypeFactory.defaultInstance().constructCollectionType(List.class, ServerRoomDTO.class));
-//
-//        System.out.println("[Rooms]");
-//
-//        for (ServerRoomDTO serverRoomDTO : serverRoomDTOList) {
-//            System.out.println("- " + serverRoomDTO.getId() + " " + serverRoomDTO.getName());
-//        }
-//    }
-//
-//    private void processTest(Map<String, String> payloadStr) throws Exception {
-//        String str = payloadStr.get("str");
-//
-//        List<String> arrayReconverted = jsonUtils.convertJsonStringToObject(str, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class));
-//        System.out.println("arrayReconverted: " + arrayReconverted);
-//    }
+
+    private void processCreateRoom(byte[] payloadBytes) throws Exception {
+        ServerJoinRoomDTO serverJoinRoomDTO = BinarySerializer.deserializeData(payloadBytes, ServerJoinRoomDTO.class);
+
+        UUID roomId = serverJoinRoomDTO.getRoomId();
+
+        System.out.println("[Created Room]");
+        System.out.println("- Room Id: " + roomId);
+    }
+
+    private void processJoinRoom(byte[] payloadBytes) throws Exception {
+        ServerJoinRoomDTO serverJoinRoomDTO = BinarySerializer.deserializeData(payloadBytes, ServerJoinRoomDTO.class);
+
+        UUID roomId = serverJoinRoomDTO.getRoomId();
+
+        System.out.println("[Join Room]");
+        System.out.println("- Room Id: " + roomId);
+    }
+
+    private void processGetRoomById(byte[] payloadBytes) throws Exception {
+        ServerGetRoomByIdDTO serverGetRoomByIdDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetRoomByIdDTO.class);
+
+        ServerRoomDTO serverRoomDTO = serverGetRoomByIdDTO.getRoom();
+
+        System.out.println("[Room]");
+
+        System.out.println("- " + serverRoomDTO.getId() + " " + serverRoomDTO.getName());
+    }
+
+    private void processGetRooms(byte[] payloadBytes) throws Exception {
+        ServerGetAllRoomsDTO serverGetAllRoomsDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetAllRoomsDTO.class);
+
+        List<ServerRoomDTO> serverRoomDTOList = serverGetAllRoomsDTO.getRoomList();
+
+        System.out.println("[Rooms]");
+        for (ServerRoomDTO serverRoomDTO : serverRoomDTOList) {
+            System.out.println("- " + serverRoomDTO.getId() + " " + serverRoomDTO.getName());
+        }
+    }
 
     private Thread createListenerThread() {
         return new Thread(() -> {
