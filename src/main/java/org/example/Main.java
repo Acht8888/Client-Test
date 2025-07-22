@@ -111,9 +111,9 @@ public class Main {
 
                         handleDeclineFriendRequest(UUID.fromString(requestId));
                         break;
-//                    case "get_friend_requests":
-//                        handleGetFriendRequests();
-//                        break;
+                    case "get_friend_requests":
+                        handleGetFriendRequests();
+                        break;
 //                    case "get_friend_list":
 //                        handleGetFriendList();
 //                        break;
@@ -268,17 +268,14 @@ public class Main {
 
         sendMessage(methodCode, serializedData);
     }
-//
-//    private void handleGetFriendRequests() throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
+
+    private void handleGetFriendRequests() throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal();
+
+        sendMessage(methodCode, new byte[0]);
+    }
 //
 //    private void handleGetFriendList() throws Exception {
 //        if (!ensureConnection()) return;
@@ -426,9 +423,11 @@ public class Main {
 //            processGetRooms(payloadStr);
 //        } else if (responseType == ServerMessageType.HELLO.ordinal()) {
 //            processTest(payloadStr);
-//        } else if (responseType == ServerMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal()) {
-//            processGetFriendRequests(payloadStr);
-//        } else if (responseType == ServerMessageType.GET_FRIEND_LIST.ordinal()) {
+//        }
+        else if (responseType == ServerMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal()) {
+            processGetFriendRequests(payloadBytes);
+        }
+//        else if (responseType == ServerMessageType.GET_FRIEND_LIST.ordinal()) {
 //            processGetFriendList(payloadStr);
 //        }
     }
@@ -455,18 +454,18 @@ public class Main {
         System.out.println("[Decline Friend Request]");
         System.out.println("- Target Username: " + serverDeclineFriendRequestDTO.getTargetUsername());
     }
-//
-//    private void processGetFriendRequests(Map<String, String> payloadStr) throws Exception {
-//        String serverFriendDTOListJsonString = payloadStr.get("pendingFriendRequests");
-//
-//        List<ServerFriendDTO> serverFriendDTOList = jsonUtils.convertJsonStringToObject(serverFriendDTOListJsonString, TypeFactory.defaultInstance().constructCollectionType(List.class, ServerFriendDTO.class));
-//
-//        System.out.println("[Pending Friend Requests]");
-//
-//        for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
-//            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
-//        }
-//    }
+
+    private void processGetFriendRequests(byte[] payloadBytes) throws Exception {
+        ServerGetFriendRequestDTO serverGetFriendRequestDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetFriendRequestDTO.class);
+
+        List<ServerFriendDTO> serverFriendDTOList = serverGetFriendRequestDTO.getFriendRequestList();
+
+        System.out.println("[Pending Friend Requests]");
+
+        for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
+            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
+        }
+    }
 //
 //    private void processGetFriendList(Map<String, String> payloadStr) throws Exception {
 //        String serverFriendDTOListJsonString = payloadStr.get("friendList");
