@@ -12,19 +12,10 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServerUserDTO {
+public class ClientChatDTO {
     @BinarySerializer.FieldOrder(0)
-    private UUID id;
+    UUID[] participants;
 
-    // Authentication
     @BinarySerializer.FieldOrder(1)
-    private String username;
-
-    // In-game data
-    @BinarySerializer.FieldOrder(2)
-    private String displayName;
-
-    @BinarySerializer.FieldOrder(3)
-    private int level;
-
+    String chatMessage;
 }
