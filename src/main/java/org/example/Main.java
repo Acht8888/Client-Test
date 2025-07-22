@@ -106,11 +106,11 @@ public class Main {
 
                         handleAcceptFriendRequest(UUID.fromString(requestId));
                         break;
-//                    case "decline_friend_request":
-//                        requestId = parts[1];
-//
-//                        handleDeclineFriendRequest(UUID.fromString(requestId));
-//                        break;
+                    case "decline_friend_request":
+                        requestId = parts[1];
+
+                        handleDeclineFriendRequest(UUID.fromString(requestId));
+                        break;
 //                    case "get_friend_requests":
 //                        handleGetFriendRequests();
 //                        break;
@@ -256,18 +256,18 @@ public class Main {
 
         sendMessage(methodCode, serializedData);
     }
-//
-//    private void handleDeclineFriendRequest(UUID requestId) throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.DECLINE_FRIEND_REQUEST.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("requestId", requestId.toString());
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
+
+    private void handleDeclineFriendRequest(UUID requestId) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.DECLINE_FRIEND_REQUEST.ordinal();
+
+        ClientDeclineFriendRequestDTO clientDeclineFriendRequestDTO = new ClientDeclineFriendRequestDTO(requestId);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientDeclineFriendRequestDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
 //
 //    private void handleGetFriendRequests() throws Exception {
 //        if (!ensureConnection()) return;
@@ -405,17 +405,16 @@ public class Main {
         else if (responseType == ServerMessageType.FRIEND_ACCEPT.ordinal()) {
             processAcceptFriendRequest(payloadBytes);
         }
-//        else if (responseType == ServerMessageType.FRIEND_DECLINE.ordinal()) {
-//            processDeclineFriendRequest(payloadStr);
-//        } else if (responseType == ServerMessageType.PRIVATE_MESSAGE.ordinal()) {
-//            processChat(payloadStr);
-//        }
+        else if (responseType == ServerMessageType.FRIEND_DECLINE.ordinal()) {
+            processDeclineFriendRequest(payloadBytes);
+        }
+        else if (responseType == ServerMessageType.PRIVATE_MESSAGE.ordinal()) {
+            processChat(payloadBytes);
+        }
         else if (responseType == ServerMessageType.GET_USER_INFO.ordinal()) {
             processGetUserInfo(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_BY_ID.ordinal()) {
             processGetUserById(payloadBytes);
-        } else if (responseType == ServerMessageType.PRIVATE_MESSAGE.ordinal()) {
-            processChat(payloadBytes);
         }
 //        else if (responseType == ServerMessageType.CREATE_ROOM.ordinal()) {
 //            processCreateRoom(payloadStr);
@@ -449,12 +448,13 @@ public class Main {
         System.out.println("[Accept Friend Request]");
         System.out.println("- Target Username: " + serverAcceptFriendRequestDTO.getTargetUsername());
     }
-//
-//    private void processDeclineFriendRequest(Map<String, String> payloadStr) throws Exception {
-//        String targetUsername = payloadStr.get("targetUsername");
-//
-//        System.out.println(targetUsername + " has declined your friend request");
-//    }
+
+    private void processDeclineFriendRequest(byte[] payloadBytes) throws Exception {
+        ServerDeclineFriendRequestDTO serverDeclineFriendRequestDTO = BinarySerializer.deserializeData(payloadBytes, ServerDeclineFriendRequestDTO.class);
+
+        System.out.println("[Decline Friend Request]");
+        System.out.println("- Target Username: " + serverDeclineFriendRequestDTO.getTargetUsername());
+    }
 //
 //    private void processGetFriendRequests(Map<String, String> payloadStr) throws Exception {
 //        String serverFriendDTOListJsonString = payloadStr.get("pendingFriendRequests");
