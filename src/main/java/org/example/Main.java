@@ -18,7 +18,7 @@ public class Main {
     private static final String HOST = "localhost";
     private static final int PORT = 9000;
 
-    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMTQ3MjY0LCJleHAiOjE3NTMyMzM2NjR9.ex3JXzrqchV70KwqQ4z1QAbLpYnTLuJnMO1PrBc9C8E";
+    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMTUyMTQ2LCJleHAiOjE3NTMyMzg1NDZ9.wERrP-kTKJvhMHqJ86u0ElN3CmAGLAnn_7-EIHHSCQk";
     private final String jwtReconnect = "whkvSSubUV_-7i_TmAfOL_OcXhtfPF5y";
 
     private static final Random random = new Random();
@@ -96,11 +96,11 @@ public class Main {
 
                         handleChat(targetIds, message);
                         break;
-//                    case "send_friend_request":
-//                        String targetId = parts[1];
-//
-//                        handleFriendRequest(targetId);
-//                        break;
+                    case "send_friend_request":
+                        String targetId = parts[1];
+
+                        handleFriendRequest(targetId);
+                        break;
 //                    case "accept_friend_request":
 //                        String requestId = parts[1];
 //
@@ -170,22 +170,6 @@ public class Main {
         }
     }
 
-//    private void handleAuth(String token) throws Exception {
-//        // 1. Ensure connection
-//        if (!ensureConnection()) return;
-//
-//        // 2. Define methodCode and messageId
-//        short methodCode = (short) ClientMessageType.AUTH_REQUEST.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        // 3. Create payloadMap
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("token", token);
-//
-//        // 4. Send message
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
-
     private void handleAuthInstant() throws Exception {
         if (!ensureConnection()) return;
 
@@ -198,19 +182,6 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-//    private void handleReconnect(String token, String reconnectToken) throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.RECONNECT.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("token", token);
-//        payloadMap.put("reconnect_token", reconnectToken);
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
-//
     private void handleReconnectInstant() throws Exception {
         if (!ensureConnection()) return;
 
@@ -261,19 +232,18 @@ public class Main {
 
         sendMessage(methodCode, serializedData);
     }
-//
-//    private void handleFriendRequest(String targetId) throws  Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.SEND_FRIEND_REQUEST.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("targetId", targetId);
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
+
+    private void handleFriendRequest(String targetId) throws  Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.SEND_FRIEND_REQUEST.ordinal();
+
+        ClientSendFriendRequestDTO clientSendFriendRequestDTO = new ClientSendFriendRequestDTO(UUID.fromString(targetId));
+
+        byte[] serializedData = BinarySerializer.serializeData(clientSendFriendRequestDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
 //
 //    private void handleAcceptFriendRequest(UUID requestId) throws Exception {
 //        if (!ensureConnection()) return;
@@ -430,10 +400,10 @@ public class Main {
 
             System.out.println("[Server message]");
             System.out.println("- Response: " + serverAuthFailDTO.getResponse());
+        } else if (responseType == ServerMessageType.FRIEND_REQUEST.ordinal()) {
+            processFriendRequest(payloadBytes);
         }
-//        if (responseType == ServerMessageType.FRIEND_REQUEST.ordinal()) {
-//            processFriendRequest(payloadStr);
-//        } else if (responseType == ServerMessageType.FRIEND_ACCEPT.ordinal()) {
+//        else if (responseType == ServerMessageType.FRIEND_ACCEPT.ordinal()) {
 //            processAcceptFriendRequest(payloadStr);
 //        } else if (responseType == ServerMessageType.FRIEND_DECLINE.ordinal()) {
 //            processDeclineFriendRequest(payloadStr);
@@ -463,13 +433,15 @@ public class Main {
 //            processGetFriendList(payloadStr);
 //        }
     }
-//
-//    private void processFriendRequest(Map<String, String> payloadStr) throws Exception {
-//        UUID requestId = UUID.fromString(payloadStr.get("requestId"));
-//        String requesterUsername = payloadStr.get("requesterUsername");
-//
-//        System.out.println("Friend request received from: " + requesterUsername);
-//    }
+
+    private void processFriendRequest(byte[] payloadBytes) throws Exception {
+        ServerSendFriendRequestDTO serverSendFriendRequestDTO = BinarySerializer.deserializeData(payloadBytes, ServerSendFriendRequestDTO.class);
+
+        System.out.println("[Friend Request]");
+        System.out.println("- Request Id: " + serverSendFriendRequestDTO.getRequestId());
+        System.out.println("- Requester Username: " + serverSendFriendRequestDTO.getRequesterUsername());
+
+    }
 //
 //    private void processAcceptFriendRequest(Map<String, String> payloadStr) throws Exception {
 //        String targetUsername = payloadStr.get("targetUsername");
