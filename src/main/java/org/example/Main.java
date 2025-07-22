@@ -18,7 +18,7 @@ public class Main {
     private static final String HOST = "localhost";
     private static final int PORT = 9000;
 
-    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMTU0OTAyLCJleHAiOjE3NTMyNDEzMDJ9.HiEN03VkfhfLdQv-vctS482vSflaMhDGFSP4ccQfeAo";
+    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMTY2NzM4LCJleHAiOjE3NTMyNTMxMzh9.FuvqBwTckfxkQXu4ueDYPBFiYsWpLKbRiGRQEQGXFPY";
     private final String jwtReconnect = "whkvSSubUV_-7i_TmAfOL_OcXhtfPF5y";
 
     private static final Random random = new Random();
@@ -114,9 +114,9 @@ public class Main {
                     case "get_friend_requests":
                         handleGetFriendRequests();
                         break;
-//                    case "get_friend_list":
-//                        handleGetFriendList();
-//                        break;
+                    case "get_friend_list":
+                        handleGetFriendList();
+                        break;
 //                    case "create_room":
 //                        tokens = parts[1].split(" ");
 //                        String roomName = tokens[0];
@@ -276,17 +276,14 @@ public class Main {
 
         sendMessage(methodCode, new byte[0]);
     }
-//
-//    private void handleGetFriendList() throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.GET_FRIEND_LIST.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
+
+    private void handleGetFriendList() throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.GET_FRIEND_LIST.ordinal();
+
+        sendMessage(methodCode, new byte[0]);
+    }
 //
 //    private void handleCreateRoomRequest(String roomName, String roomType, String maxPlayers) throws Exception {
 //        if (!ensureConnection()) return;
@@ -426,10 +423,9 @@ public class Main {
 //        }
         else if (responseType == ServerMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal()) {
             processGetFriendRequests(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_FRIEND_LIST.ordinal()) {
+            processGetFriendList(payloadBytes);
         }
-//        else if (responseType == ServerMessageType.GET_FRIEND_LIST.ordinal()) {
-//            processGetFriendList(payloadStr);
-//        }
     }
 
     private void processFriendRequest(byte[] payloadBytes) throws Exception {
@@ -466,18 +462,18 @@ public class Main {
             System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
         }
     }
-//
-//    private void processGetFriendList(Map<String, String> payloadStr) throws Exception {
-//        String serverFriendDTOListJsonString = payloadStr.get("friendList");
-//
-//        List<ServerFriendDTO> serverFriendDTOList = jsonUtils.convertJsonStringToObject(serverFriendDTOListJsonString, TypeFactory.defaultInstance().constructCollectionType(List.class, ServerFriendDTO.class));
-//
-//        System.out.println("[Friend List]");
-//
-//        for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
-//            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
-//        }
-//    }
+
+    private void processGetFriendList(byte[] payloadBytes) throws Exception {
+        ServerGetFriendListDTO serverGetFriendListDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetFriendListDTO.class);
+
+        List<ServerFriendDTO> serverFriendDTOList = serverGetFriendListDTO.getFriendList();
+
+        System.out.println("[Friend List]");
+
+        for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
+            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
+        }
+    }
 //
 //    private void processChat(Map<String, String> payloadStr) throws Exception {
 //        String chatMessage = payloadStr.get("chatMessage");
