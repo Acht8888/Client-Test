@@ -18,7 +18,7 @@ public class Main {
     private static final String HOST = "localhost";
     private static final int PORT = 9000;
 
-    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMTY2NzM4LCJleHAiOjE3NTMyNTMxMzh9.FuvqBwTckfxkQXu4ueDYPBFiYsWpLKbRiGRQEQGXFPY";
+    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImUyOGI3ZDI0LWNmNmMtNDY4MS05NWQzLWZkMmYyMDQ4Y2FiZiIsInN1YiI6ImpvaG5fZGljayIsImlhdCI6MTc1MzE2Njc0MiwiZXhwIjoxNzUzMjUzMTQyfQ.2tl5295KVW7Nszvr6Zbb4MAmVcn1gE5t81iiWznRxps";
     private final String jwtReconnect = "whkvSSubUV_-7i_TmAfOL_OcXhtfPF5y";
 
     private static final Random random = new Random();
