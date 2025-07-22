@@ -1,11 +1,12 @@
 package org.example.dtos;
 
-import com.potionprotocol.application.friend.enums.FriendStatus;
-import com.potionprotocol.common.utils.BinarySerializer;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.enums.FriendStatus;
+import org.example.utils.BinarySerializer;
 
 import java.util.UUID;
 
@@ -24,5 +25,5 @@ public class ServerFriendDTO {
     private UUID friendId;
 
     @BinarySerializer.FieldOrder(3)
-    private FriendStatus status;
+    private short status;
 }
