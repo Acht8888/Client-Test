@@ -14,6 +14,7 @@ public enum ServerMessageType {
     GET_USER_BY_ID,
 
     // Game state sync
+    GAME_CREATED,
     GAME_STATE,
     PLAYER_JOINED,
     PLAYER_LEFT,
@@ -57,7 +58,10 @@ public enum ServerMessageType {
     SERVER_TICK,
 
     // Test
-    HELLO;
+    HELLO,
+
+
+    ERROR;
 
     /**
      * Messages that should be sent to all connected clients

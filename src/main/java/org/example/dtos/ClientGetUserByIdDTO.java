@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientGetUserById {
+public class ClientGetUserByIdDTO {
     @BinarySerializer.FieldOrder(0)
     private UUID id;
 }

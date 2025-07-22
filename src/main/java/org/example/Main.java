@@ -18,7 +18,7 @@ public class Main {
     private static final String HOST = "localhost";
     private static final int PORT = 9000;
 
-    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMTUyMTQ2LCJleHAiOjE3NTMyMzg1NDZ9.wERrP-kTKJvhMHqJ86u0ElN3CmAGLAnn_7-EIHHSCQk";
+    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFkMmY5MDVlLTRmZTgtNDcwMy1iNTQxLThhYzk0OTY2MDczMiIsInN1YiI6ImpvaG5fZG9lIiwiaWF0IjoxNzUzMTU0OTAyLCJleHAiOjE3NTMyNDEzMDJ9.HiEN03VkfhfLdQv-vctS482vSflaMhDGFSP4ccQfeAo";
     private final String jwtReconnect = "whkvSSubUV_-7i_TmAfOL_OcXhtfPF5y";
 
     private static final Random random = new Random();
@@ -101,11 +101,11 @@ public class Main {
 
                         handleFriendRequest(targetId);
                         break;
-//                    case "accept_friend_request":
-//                        String requestId = parts[1];
-//
-//                        handleAcceptFriendRequest(UUID.fromString(requestId));
-//                        break;
+                    case "accept_friend_request":
+                        String requestId = parts[1];
+
+                        handleAcceptFriendRequest(UUID.fromString(requestId));
+                        break;
 //                    case "decline_friend_request":
 //                        requestId = parts[1];
 //
@@ -208,9 +208,9 @@ public class Main {
 
         short methodCode = (short) ClientMessageType.GET_USER_BY_ID.ordinal();
 
-        ClientGetUserById clientGetUserById = new ClientGetUserById(UUID.fromString(userId));
+        ClientGetUserByIdDTO clientGetUserByIdDTO = new ClientGetUserByIdDTO(UUID.fromString(userId));
 
-        byte[] serializedData = BinarySerializer.serializeData(clientGetUserById);
+        byte[] serializedData = BinarySerializer.serializeData(clientGetUserByIdDTO);
 
         sendMessage(methodCode, serializedData);
     }
@@ -244,19 +244,18 @@ public class Main {
 
         sendMessage(methodCode, serializedData);
     }
-//
-//    private void handleAcceptFriendRequest(UUID requestId) throws Exception {
-//        if (!ensureConnection()) return;
-//
-//        short methodCode = (short) ClientMessageType.ACCEPT_FRIEND_REQUEST.ordinal();
-//        int messageId = random.nextInt(Integer.MAX_VALUE);
-//
-//
-//        Map<String, String> payloadMap = new HashMap<>();
-//        payloadMap.put("requestId", requestId.toString());
-//
-//        sendMessage(methodCode, messageId, payloadMap);
-//    }
+
+    private void handleAcceptFriendRequest(UUID requestId) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.ACCEPT_FRIEND_REQUEST.ordinal();
+
+        ClientAcceptFriendRequestDTO clientAcceptFriendRequestDTO = new ClientAcceptFriendRequestDTO(requestId);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientAcceptFriendRequestDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
 //
 //    private void handleDeclineFriendRequest(UUID requestId) throws Exception {
 //        if (!ensureConnection()) return;
@@ -403,9 +402,10 @@ public class Main {
         } else if (responseType == ServerMessageType.FRIEND_REQUEST.ordinal()) {
             processFriendRequest(payloadBytes);
         }
-//        else if (responseType == ServerMessageType.FRIEND_ACCEPT.ordinal()) {
-//            processAcceptFriendRequest(payloadStr);
-//        } else if (responseType == ServerMessageType.FRIEND_DECLINE.ordinal()) {
+        else if (responseType == ServerMessageType.FRIEND_ACCEPT.ordinal()) {
+            processAcceptFriendRequest(payloadBytes);
+        }
+//        else if (responseType == ServerMessageType.FRIEND_DECLINE.ordinal()) {
 //            processDeclineFriendRequest(payloadStr);
 //        } else if (responseType == ServerMessageType.PRIVATE_MESSAGE.ordinal()) {
 //            processChat(payloadStr);
@@ -442,12 +442,13 @@ public class Main {
         System.out.println("- Requester Username: " + serverSendFriendRequestDTO.getRequesterUsername());
 
     }
-//
-//    private void processAcceptFriendRequest(Map<String, String> payloadStr) throws Exception {
-//        String targetUsername = payloadStr.get("targetUsername");
-//
-//        System.out.println(targetUsername + " has accepted your friend request");
-//    }
+
+    private void processAcceptFriendRequest(byte[] payloadBytes) throws Exception {
+        ServerAcceptFriendRequestDTO serverAcceptFriendRequestDTO = BinarySerializer.deserializeData(payloadBytes, ServerAcceptFriendRequestDTO.class);
+
+        System.out.println("[Accept Friend Request]");
+        System.out.println("- Target Username: " + serverAcceptFriendRequestDTO.getTargetUsername());
+    }
 //
 //    private void processDeclineFriendRequest(Map<String, String> payloadStr) throws Exception {
 //        String targetUsername = payloadStr.get("targetUsername");

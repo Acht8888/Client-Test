@@ -49,6 +49,7 @@ public enum ClientMessageType {
     DROP_RESOURCE,
 
     // ===== Game Management =====
+    CREATE_GAME,
     PAUSE_GAME,
     RESUME_GAME,
     SYNC_STATE,
