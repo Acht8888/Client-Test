@@ -30,25 +30,24 @@ public enum ServerMessageType {
     SERVER_NOTICE,
     RECONNECT_PROMPT,
 
-    // Communication
+    // ===== Chat =====
     CHAT_BROADCAST,
-    PRIVATE_MESSAGE,
+    SEND_CHAT_TO_USER,
+    SEND_CHAT_TO_ROOM,
 
-    // Friend
-    FRIEND_REQUEST,
-    FRIEND_ACCEPT,
-    FRIEND_DECLINE,
-    GET_PENDING_FRIEND_REQUESTS,
+    // ===== Friend System =====
+    SEND_FRIEND_REQUEST,
+    ACCEPT_FRIEND_REQUEST,
+    DECLINE_FRIEND_REQUEST,
+    GET_FRIEND_REQUESTS,
     GET_FRIEND_LIST,
 
-    // Room
+    // ===== Room System =====
     CREATE_ROOM,
     GET_ROOM_BY_ID,
     GET_ALL_ROOMS,
     JOIN_ROOM,
     LEAVE_ROOM,
-    UPDATE_ROOM,
-    DELETE_ROOM,
     READY,
     UNREADY,
     START_GAME,
