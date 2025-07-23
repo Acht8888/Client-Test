@@ -110,6 +110,11 @@ public class Main {
 
                         handleDeclineFriendRequest(UUID.fromString(requestId));
                         break;
+                    case "remove_friend":
+                        requestId = parts[1];
+
+                        handleRemoveFriend(UUID.fromString(requestId));
+                        break;
                     case "get_friend_requests":
                         handleGetFriendRequests();
                         break;
@@ -297,7 +302,7 @@ public class Main {
     private void handleChat(String targetIds, String message) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.SEND_CHAT_MESSAGE.ordinal();
+        short methodCode = (short) ClientMessageType.SEND_CHAT_TO_USER.ordinal();
 
         String[] participantsStr = targetIds.split(",");
         UUID[] uuidArray = new UUID[participantsStr.length];
@@ -348,10 +353,22 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
+    private void handleRemoveFriend(UUID requestId) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.REMOVE_FRIEND.ordinal();
+
+        ClientRemoveFriendDTO clientRemoveFriendDTO = new ClientRemoveFriendDTO(requestId);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientRemoveFriendDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
+
     private void handleGetFriendRequests() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal();
+        short methodCode = (short) ClientMessageType.GET_FRIEND_REQUESTS.ordinal();
 
         sendMessage(methodCode, new byte[0]);
     }
@@ -442,24 +459,16 @@ public class Main {
 
     private void processServerMessage(short responseType, byte[] payloadBytes) throws Exception {
         if (responseType == ServerMessageType.AUTH_SUCCESS.ordinal()) {
-            ServerAuthSuccessDTO serverAuthSuccessDTO = BinarySerializer.deserializeData(payloadBytes, ServerAuthSuccessDTO.class);
-
-            System.out.println("[Auth Success]");
-            System.out.println("- Reconnect Token: " + serverAuthSuccessDTO.getReconnectToken());
-
-            this.jwtReconnect = serverAuthSuccessDTO.getReconnectToken();
+            processAuthSuccess(payloadBytes);
         } else if (responseType == ServerMessageType.AUTH_FAIL.ordinal()) {
-            ServerAuthFailDTO serverAuthFailDTO = BinarySerializer.deserializeData(payloadBytes, ServerAuthFailDTO.class);
-
-            System.out.println("[Auth Fail]");
-            System.out.println("- Response: " + serverAuthFailDTO.getResponse());
-        } else if (responseType == ServerMessageType.FRIEND_REQUEST.ordinal()) {
+            processAuthFail(payloadBytes);
+        } else if (responseType == ServerMessageType.SEND_FRIEND_REQUEST.ordinal()) {
             processFriendRequest(payloadBytes);
-        } else if (responseType == ServerMessageType.FRIEND_ACCEPT.ordinal()) {
+        } else if (responseType == ServerMessageType.ACCEPT_FRIEND_REQUEST.ordinal()) {
             processAcceptFriendRequest(payloadBytes);
-        } else if (responseType == ServerMessageType.FRIEND_DECLINE.ordinal()) {
+        } else if (responseType == ServerMessageType.DECLINE_FRIEND_REQUEST.ordinal()) {
             processDeclineFriendRequest(payloadBytes);
-        } else if (responseType == ServerMessageType.PRIVATE_MESSAGE.ordinal()) {
+        } else if (responseType == ServerMessageType.SEND_CHAT_TO_USER.ordinal()) {
             processChat(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_INFO.ordinal()) {
             processGetUserInfo(payloadBytes);
@@ -473,11 +482,27 @@ public class Main {
             processGetRoomById(payloadBytes);
         } else if (responseType == ServerMessageType.GET_ALL_ROOMS.ordinal()) {
             processGetRooms(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_PENDING_FRIEND_REQUESTS.ordinal()) {
+        } else if (responseType == ServerMessageType.GET_FRIEND_REQUESTS.ordinal()) {
             processGetFriendRequests(payloadBytes);
         } else if (responseType == ServerMessageType.GET_FRIEND_LIST.ordinal()) {
             processGetFriendList(payloadBytes);
         }
+    }
+
+    private void processAuthSuccess(byte[] payloadBytes) throws Exception {
+        ServerAuthSuccessDTO serverAuthSuccessDTO = BinarySerializer.deserializeData(payloadBytes, ServerAuthSuccessDTO.class);
+
+        System.out.println("[Auth Success]");
+        System.out.println("- Reconnect Token: " + serverAuthSuccessDTO.getReconnectToken());
+
+        this.jwtReconnect = serverAuthSuccessDTO.getReconnectToken();
+    }
+
+    private void processAuthFail(byte[] payloadBytes) throws Exception {
+        ServerAuthFailDTO serverAuthFailDTO = BinarySerializer.deserializeData(payloadBytes, ServerAuthFailDTO.class);
+
+        System.out.println("[Auth Fail]");
+        System.out.println("- Response: " + serverAuthFailDTO.getResponse());
     }
 
     private void processFriendRequest(byte[] payloadBytes) throws Exception {

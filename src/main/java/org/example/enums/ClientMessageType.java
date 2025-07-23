@@ -25,8 +25,6 @@ public enum ClientMessageType {
     GET_ALL_ROOMS,
     JOIN_ROOM,
     LEAVE_ROOM,
-    UPDATE_ROOM,
-    DELETE_ROOM,
     READY,
     UNREADY,
     START_GAME,
@@ -36,7 +34,7 @@ public enum ClientMessageType {
     ACCEPT_FRIEND_REQUEST,
     DECLINE_FRIEND_REQUEST,
     REMOVE_FRIEND,
-    GET_PENDING_FRIEND_REQUESTS,
+    GET_FRIEND_REQUESTS,
     GET_FRIEND_LIST,
 
     // ===== Player Actions =====
@@ -62,9 +60,8 @@ public enum ClientMessageType {
     GIVE_FEEDBACK,
 
     // ===== Chat =====
-    SEND_CHAT_MESSAGE,
-    RECEIVE_CHAT_MESSAGE,
-    MUTE_PLAYER,
+    SEND_CHAT_TO_USER,
+    SEND_CHAT_TO_ROOM,
 
     // ===== Test =====
     HELLO
