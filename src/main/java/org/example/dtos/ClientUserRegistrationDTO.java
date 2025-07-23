@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.utils.BinarySerializer;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServerAuthSuccessDTO {
-    @BinarySerializer.FieldOrder(1)
-    String reconnectToken;
+public class ClientUserRegistrationDTO {
+    private String username;
+    private String password;
+    private String confirmPassword;
+    private String displayName;
 }

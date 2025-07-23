@@ -1,16 +1,20 @@
 package org.example;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dtos.*;
 import org.example.enums.ClientMessageType;
 import org.example.enums.ServerMessageType;
 import org.example.utils.BinarySerializer;
 import org.example.utils.JsonUtils;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 // Test 2
@@ -18,11 +22,11 @@ public class Main {
     private static final String HOST = "localhost";
     private static final int PORT = 9000;
 
-    private final String jwt = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImUyOGI3ZDI0LWNmNmMtNDY4MS05NWQzLWZkMmYyMDQ4Y2FiZiIsInN1YiI6ImpvaG5fZGljayIsImlhdCI6MTc1MzE2Njc0MiwiZXhwIjoxNzUzMjUzMTQyfQ.2tl5295KVW7Nszvr6Zbb4MAmVcn1gE5t81iiWznRxps";
-    private final String jwtReconnect = "whkvSSubUV_-7i_TmAfOL_OcXhtfPF5y";
+    private String jwt = "";
+    private String jwtReconnect = "";
 
     private static final Random random = new Random();
-    private static final JsonUtils jsonUtils = new JsonUtils();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private Socket socket;
     private OutputStream out;
@@ -30,8 +34,6 @@ public class Main {
     private boolean connected = false;
     private Thread listenerThread = null;
     private boolean isBusy = false;
-
-    private ServerUserDTO serverUserDTO = new ServerUserDTO();
 
     public static void main(String[] args) throws Exception {
         Main client = new Main();
@@ -42,25 +44,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== TCP Binary Client ===");
-        System.out.println("Available commands:");
-        System.out.println("0. auth <token> - Authenticate with JWT token");
-        System.out.println("1. reconnect <token> <reconnect_token> - Reconnect with tokens");
-        System.out.println("100. get_user_info - Get this user information");
-        System.out.println("101. get_user_by_id - Get another user information");
-        System.out.println("1000. chat_with <targetId(s)> <message> - Send a chat message to another user");
-        System.out.println("1001. send_friend_request <targetId> - Send a friend request to another use");
-        System.out.println("1002. accept_friend_request <requestId> - Accept friend request");
-        System.out.println("1003. decline_friend_request <requestId> - Decline friend request");
-        System.out.println("1004. get_friend_requests - Get all friend requests");
-        System.out.println("1005. get_friend_list - Get friend list");
-        System.out.println("2000. create_room <roomName> <roomType> <maxPlayers> - Create a room");
-        System.out.println("2101. get_room_by_id <roomId> - Get information for a room");
-        System.out.println("2001. get_all_rooms - Get some information for all rooms");
-        System.out.println("2002. join_room <roomId> - Join a room");
-        System.out.println("2003. leave_room <roomId> - Leave a room");
-        System.out.println("9999. disconnect - Disconnect from server");
-        System.out.println("10000. exit - Exit application");
-        System.out.println();
 
         while (true) {
             System.out.print("Enter command: ");
@@ -75,6 +58,22 @@ public class Main {
 
             try {
                 switch (command) {
+                    case "register":
+                        String[] tokens = parts[1].split(" ");
+                        String username = tokens[0];
+                        String password = tokens[1];
+                        String confirmPassword = tokens[2];
+                        String displayName = tokens[3];
+
+                        handleRegister(username, password, confirmPassword, displayName);
+                        break;
+                    case "login":
+                        tokens = parts[1].split(" ");
+                        username = tokens[0];
+                        password = tokens[1];
+
+                        handleLogin(username, password);
+                        break;
                     case "a_i":
                         handleAuthInstant();
                         break;
@@ -90,7 +89,7 @@ public class Main {
                         handleGetUserById(userId);
                         break;
                     case "chat_with":
-                        String[] tokens = parts[1].split(" ", 2);
+                        tokens = parts[1].split(" ", 2);
                         String targetIds = tokens[0];
                         String message = tokens[1];
 
@@ -165,6 +164,89 @@ public class Main {
                 Thread.sleep(800);
             }
         }
+    }
+
+    private void handleRegister(String username, String password, String confirmPassword, String displayName) throws Exception {
+        URL url = new URL("http://localhost:8080/users/register");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+
+        ClientUserRegistrationDTO registrationDTO = new ClientUserRegistrationDTO(
+                username,
+                password,
+                confirmPassword,
+                displayName
+        );
+
+        String jsonInput = objectMapper.writeValueAsString(registrationDTO);
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = connection.getResponseCode();
+        System.out.println("HTTP Status: " + responseCode);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                responseCode >= 200 && responseCode < 300 ? connection.getInputStream() : connection.getErrorStream()
+        ));
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            response.append(line);
+        }
+        JsonNode jsonResponse = objectMapper.readTree(response.toString());
+
+        String message = jsonResponse.path("message").asText();
+        System.out.println("Response message: " + message);
+    }
+
+    private void handleLogin(String username, String password) throws Exception {
+        URL url = new URL("http://localhost:8080/users/login");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+
+        ClientUserLoginDTO loginDTO = new ClientUserLoginDTO(
+          username,
+          password
+        );
+
+        String jsonInput = objectMapper.writeValueAsString(loginDTO);
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = connection.getResponseCode();
+        System.out.println("HTTP Status: " + responseCode);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                responseCode >= 200 && responseCode < 300 ? connection.getInputStream() : connection.getErrorStream()
+        ));
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            response.append(line);
+        }
+        JsonNode jsonResponse = objectMapper.readTree(response.toString());
+
+        String message = jsonResponse.path("message").asText();
+        System.out.println("Response message: " + message);
+
+        String token = jsonResponse.path("data").path("token").asText();
+        System.out.println("Token: " + token);
+
+        this.jwt = token;
     }
 
     private void handleAuthInstant() throws Exception {
@@ -363,8 +445,9 @@ public class Main {
             ServerAuthSuccessDTO serverAuthSuccessDTO = BinarySerializer.deserializeData(payloadBytes, ServerAuthSuccessDTO.class);
 
             System.out.println("[Auth Success]");
-            System.out.println("- Response: " + serverAuthSuccessDTO.getResponse());
             System.out.println("- Reconnect Token: " + serverAuthSuccessDTO.getReconnectToken());
+
+            this.jwtReconnect = serverAuthSuccessDTO.getReconnectToken();
         } else if (responseType == ServerMessageType.AUTH_FAIL.ordinal()) {
             ServerAuthFailDTO serverAuthFailDTO = BinarySerializer.deserializeData(payloadBytes, ServerAuthFailDTO.class);
 
@@ -530,7 +613,7 @@ public class Main {
 
                     byte[] responseBytes = in.readNBytes(totalLength);
 
-                    isBusy = true;
+                    startWork();
 
                     ByteBuffer buffer = ByteBuffer.wrap(responseBytes);
                     short responseType = buffer.getShort();
@@ -546,7 +629,7 @@ public class Main {
 
                     processServerMessage(responseType, payloadBytes);
 
-                    isBusy = false;
+                    stopWork();
                 }
             } catch (Exception e) {
                 System.out.println("Error in server listener: " + e.getMessage());
@@ -612,6 +695,14 @@ public class Main {
         } catch (Exception e) {
             System.out.println("Error closing connection: " + e.getMessage());
         }
+    }
+
+    private void startWork() {
+        isBusy = true;
+    }
+
+    private void stopWork() {
+        isBusy = false;
     }
 
 }
