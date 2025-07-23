@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.enums.FriendStatus;
 import org.example.utils.BinarySerializer;
 
 import java.util.UUID;
@@ -19,11 +18,9 @@ public class ServerFriendDTO {
     private UUID id;
 
     @BinarySerializer.FieldOrder(1)
-    private UUID userId;
-
-    @BinarySerializer.FieldOrder(2)
     private UUID friendId;
 
-    @BinarySerializer.FieldOrder(3)
-    private short status;
+    @BinarySerializer.FieldOrder(2)
+    private String friendDisplayName;
+
 }

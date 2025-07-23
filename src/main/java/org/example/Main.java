@@ -536,7 +536,7 @@ public class Main {
         System.out.println("[Pending Friend Requests]");
 
         for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
-            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
+            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId() + " " + serverFriendDTO.getFriendDisplayName());
         }
     }
 
@@ -548,7 +548,7 @@ public class Main {
         System.out.println("[Friend List]");
 
         for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
-            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId());
+            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId() + " " + serverFriendDTO.getFriendDisplayName());
         }
     }
 
