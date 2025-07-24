@@ -487,8 +487,6 @@ public class Main {
             processGetFriendList(payloadBytes);
         } else if (responseType == ServerMessageType.FRIEND_EXISTS.ordinal()) {
             processFriendExists(payloadBytes);
-        } else if (responseType == ServerMessageType.FRIEND_NOT_TARGET.ordinal()) {
-            processFriendNotATarget(payloadBytes);
         } else if (responseType == ServerMessageType.CHAT_TO_USER.ordinal()) {
             processChatUser(payloadBytes);
         } else if (responseType == ServerMessageType.CHAT_TO_ROOM.ordinal()) {
@@ -547,11 +545,6 @@ public class Main {
     private void processFriendExists(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
         System.out.println("- Friend exists");
-    }
-
-    private void processFriendNotATarget(byte[] payloadBytes) throws Exception {
-        System.out.println("[Error]");
-        System.out.println("- Not a target");
     }
 
     private void processGetUserInfo(byte[] payloadBytes) throws Exception {
