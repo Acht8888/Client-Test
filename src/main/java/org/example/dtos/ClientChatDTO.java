@@ -14,8 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ClientChatDTO {
     @BinarySerializer.FieldOrder(0)
-    UUID[] participants;
+    private UUID[] participants;
 
     @BinarySerializer.FieldOrder(1)
-    String chatMessage;
+    private String chatMessage;
 }

@@ -14,5 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 public class ServerGetAllRoomsDTO {
     @BinarySerializer.FieldOrder(0)
-    List<ServerRoomDTO> roomList;
+    private List<ServerRoomDTO> roomList;
 }

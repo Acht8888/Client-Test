@@ -12,5 +12,5 @@ import org.example.utils.BinarySerializer;
 @NoArgsConstructor
 public class ServerChatDTO {
     @BinarySerializer.FieldOrder(0)
-    String chatMessage;
+    private String chatMessage;
 }

@@ -6,17 +6,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.utils.BinarySerializer;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientCreateRoomDTO {
+public class ServerRoomPlayerDTO {
+
     @BinarySerializer.FieldOrder(0)
-    private String roomName;
+    private UUID playerId;
 
     @BinarySerializer.FieldOrder(1)
-    private short roomType;
+    private String playerDisplayName;
 
     @BinarySerializer.FieldOrder(2)
-    private int maxPlayers;
+    private short playerRole;
+
+    @BinarySerializer.FieldOrder(3)
+    private short playerStatus;
+
 }
