@@ -161,7 +161,7 @@ public class Main {
                         roomId = tokens[0];
                         message = tokens[1];
 
-                        handleChatRoom(roomId, message);
+                        handleChatRoom(UUID.fromString(roomId), message);
                         break;
                     case "disconnect":
                         handleDisconnect();
@@ -345,8 +345,16 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleChatRoom(String roomId, String message) throws Exception {
+    private void handleChatRoom(UUID roomId, String message) throws Exception {
+        if (!ensureConnection()) return;
 
+        short methodCode = (short) ClientMessageType.CHAT_TO_ROOM.ordinal();
+
+        ClientChatRoomDTO clientChatRoomDTO = new ClientChatRoomDTO(roomId, message);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientChatRoomDTO);
+
+        sendMessage(methodCode, serializedData);
     }
 
     private void handleFriendRequest(UUID targetId) throws  Exception {
@@ -502,6 +510,8 @@ public class Main {
             processDeclineFriendRequest(payloadBytes);
         } else if (responseType == ServerMessageType.CHAT_TO_USER.ordinal()) {
             processChatUser(payloadBytes);
+        } else if (responseType == ServerMessageType.CHAT_TO_ROOM.ordinal()) {
+            processChatRoom(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_INFO.ordinal()) {
             processGetUserInfo(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_BY_ID.ordinal()) {
@@ -607,10 +617,19 @@ public class Main {
     private void processChatUser(byte[] payloadBytes) throws Exception {
         ServerChatUserDTO serverChatUserDTO = BinarySerializer.deserializeData(payloadBytes, ServerChatUserDTO.class);
 
-        System.out.println("[Chatting]");
+        System.out.println("[Chatting User]");
         System.out.println("- Requester Id: " + serverChatUserDTO.getRequesterId());
         System.out.println("- Requester Name: " + serverChatUserDTO.getRequesterDisplayName());
         System.out.println("- Message: " + serverChatUserDTO.getMessage());
+    }
+
+    private void processChatRoom(byte[] payloadBytes) throws Exception {
+        ServerChatRoomDTO serverChatRoomDTO = BinarySerializer.deserializeData(payloadBytes, ServerChatRoomDTO.class);
+
+        System.out.println("[Chatting Room]");
+        System.out.println("- Requester Id: " + serverChatRoomDTO.getRequesterId());
+        System.out.println("- Requester Name: " + serverChatRoomDTO.getRequesterDisplayName());
+        System.out.println("- Message: " + serverChatRoomDTO.getMessage());
     }
 
     private void processCreateRoom(byte[] payloadBytes) throws Exception {
