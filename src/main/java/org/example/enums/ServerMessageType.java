@@ -41,7 +41,6 @@ public enum ServerMessageType {
 
     // ===== Friend System Error =====
     FRIEND_EXISTS,
-    FRIEND_NOT_TARGET,
 
     // ===== Room System =====
     CREATE_ROOM,
