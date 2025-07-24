@@ -42,6 +42,9 @@ public enum ServerMessageType {
     GET_FRIEND_REQUESTS,
     GET_FRIEND_LIST,
 
+    // ===== Friend System Error =====
+    FRIEND_EXISTS,
+
     // ===== Room System =====
     CREATE_ROOM,
     GET_ROOM_BY_ID,

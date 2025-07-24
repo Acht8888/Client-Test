@@ -483,6 +483,8 @@ public class Main {
             processAcceptFriendRequest(payloadBytes);
         } else if (responseType == ServerMessageType.DECLINE_FRIEND_REQUEST.ordinal()) {
             processDeclineFriendRequest(payloadBytes);
+        } else if (responseType == ServerMessageType.FRIEND_EXISTS.ordinal()) {
+            processFriendExists(payloadBytes);
         } else if (responseType == ServerMessageType.CHAT_TO_USER.ordinal()) {
             processChatUser(payloadBytes);
         } else if (responseType == ServerMessageType.CHAT_TO_ROOM.ordinal()) {
@@ -543,6 +545,10 @@ public class Main {
 
         System.out.println("[Decline Friend Request]");
         System.out.println("- Target Username: " + serverDeclineFriendRequestDTO.getTargetUsername());
+    }
+
+    private void processFriendExists(byte[] payloadBytes) throws Exception {
+        System.out.println("[Friend Exists]");
     }
 
     private void processGetFriendRequests(byte[] payloadBytes) throws Exception {
