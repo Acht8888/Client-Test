@@ -12,11 +12,11 @@ import org.example.utils.BinarySerializer;
 @NoArgsConstructor
 public class ClientCreateRoomDTO {
     @BinarySerializer.FieldOrder(0)
-    String roomName;
+    private String roomName;
 
     @BinarySerializer.FieldOrder(1)
-    short roomType;
+    private short roomType;
 
     @BinarySerializer.FieldOrder(2)
-    int maxPlayers;
+    private int maxPlayers;
 }

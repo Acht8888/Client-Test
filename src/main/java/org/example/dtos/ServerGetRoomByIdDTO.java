@@ -12,5 +12,5 @@ import org.example.utils.BinarySerializer;
 @NoArgsConstructor
 public class ServerGetRoomByIdDTO {
     @BinarySerializer.FieldOrder(0)
-    ServerRoomDTO room;
+    private ServerRoomDTO room;
 }
