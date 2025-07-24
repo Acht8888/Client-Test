@@ -142,17 +142,10 @@ public class Main {
 
                         handleLeaveRoomRequest(UUID.fromString(roomId));
                         break;
-                    case "chat_with":
-                        tokens = parts[1].split(" ", 2);
-                        String targetIds = tokens[0];
-                        String message = tokens[1];
-
-                        handleChat(targetIds, message);
-                        break;
                     case "chat_to_user":
                         tokens = parts[1].split(" ", 2);
                         targetId = tokens[0];
-                        message = tokens[1];
+                        String message = tokens[1];
 
                         handleChatUser(UUID.fromString(targetId), message);
                         break;
@@ -311,24 +304,6 @@ public class Main {
         ClientGetUserByIdDTO clientGetUserByIdDTO = new ClientGetUserByIdDTO(userId);
 
         byte[] serializedData = BinarySerializer.serializeData(clientGetUserByIdDTO);
-
-        sendMessage(methodCode, serializedData);
-    }
-
-    private void handleChat(String targetIds, String message) throws Exception {
-        if (!ensureConnection()) return;
-
-        short methodCode = (short) ClientMessageType.CHAT_TO_USER.ordinal();
-
-        String[] participantsStr = targetIds.split(",");
-        UUID[] uuidArray = new UUID[participantsStr.length];
-        for (int i = 0; i < participantsStr.length; i++) {
-            uuidArray[i] = UUID.fromString(participantsStr[i]);
-        }
-
-        ClientChatDTO clientChatDTO = new ClientChatDTO(uuidArray, message);
-
-        byte[] serializedData = BinarySerializer.serializeData(clientChatDTO);
 
         sendMessage(methodCode, serializedData);
     }
@@ -552,8 +527,8 @@ public class Main {
 
         System.out.println("[Friend Request]");
         System.out.println("- Request Id: " + serverSendFriendRequestDTO.getRequestId());
-        System.out.println("- Requester Username: " + serverSendFriendRequestDTO.getRequesterUsername());
-
+        System.out.println("- Requester Id: " + serverSendFriendRequestDTO.getRequesterId());
+        System.out.println("- Requester Name: " + serverSendFriendRequestDTO.getRequesterDisplayName());
     }
 
     private void processAcceptFriendRequest(byte[] payloadBytes) throws Exception {
@@ -699,8 +674,6 @@ public class Main {
                     }
 
                     int totalLength = ByteBuffer.wrap(lengthBytes).getShort() & 0xFFFF;
-
-                    System.out.println("totalLength: " + totalLength);
 
                     byte[] responseBytes = in.readNBytes(totalLength);
 

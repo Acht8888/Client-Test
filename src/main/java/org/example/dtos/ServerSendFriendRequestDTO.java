@@ -17,5 +17,8 @@ public class ServerSendFriendRequestDTO {
     private UUID requestId;
 
     @BinarySerializer.FieldOrder(1)
-    private String requesterUsername;
+    private UUID requesterId;
+
+    @BinarySerializer.FieldOrder(2)
+    private String requesterDisplayName;
 }
