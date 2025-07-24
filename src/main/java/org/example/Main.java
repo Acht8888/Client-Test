@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dtos.*;
 import org.example.enums.ClientMessageType;
+import org.example.enums.PlayerRole;
+import org.example.enums.PlayerStatus;
 import org.example.enums.ServerMessageType;
 import org.example.utils.BinarySerializer;
 import org.example.utils.JsonUtils;
@@ -580,9 +582,9 @@ public class Main {
     }
 
     private void processCreateRoom(byte[] payloadBytes) throws Exception {
-        ServerJoinRoomDTO serverJoinRoomDTO = BinarySerializer.deserializeData(payloadBytes, ServerJoinRoomDTO.class);
+        ServerCreateRoomDTO serverCreateRoomDTO = BinarySerializer.deserializeData(payloadBytes, ServerCreateRoomDTO.class);
 
-        UUID roomId = serverJoinRoomDTO.getRoomId();
+        UUID roomId = serverCreateRoomDTO.getRoomId();
 
         System.out.println("[Created Room]");
         System.out.println("- Room Id: " + roomId);
@@ -603,8 +605,14 @@ public class Main {
         ServerRoomDTO serverRoomDTO = serverGetRoomByIdDTO.getRoom();
 
         System.out.println("[Room]");
-
         System.out.println("- " + serverRoomDTO.getId() + " " + serverRoomDTO.getName());
+        for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomDTO.getPlayerList()) {
+            System.out.println(
+                    "+ " + serverRoomPlayerDTO.getPlayerId() + " "
+                            + serverRoomPlayerDTO.getPlayerDisplayName() + " "
+                            + PlayerRole.fromShort(serverRoomPlayerDTO.getPlayerRole()) + " "
+                            + PlayerStatus.fromShort(serverRoomPlayerDTO.getPlayerStatus()));
+        }
     }
 
     private void processGetRooms(byte[] payloadBytes) throws Exception {
@@ -615,6 +623,13 @@ public class Main {
         System.out.println("[Rooms]");
         for (ServerRoomDTO serverRoomDTO : serverRoomDTOList) {
             System.out.println("- " + serverRoomDTO.getId() + " " + serverRoomDTO.getName());
+            for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomDTO.getPlayerList()) {
+                System.out.println(
+                        "+ " + serverRoomPlayerDTO.getPlayerId() + " "
+                                + serverRoomPlayerDTO.getPlayerDisplayName() + " "
+                                + PlayerRole.fromShort(serverRoomPlayerDTO.getPlayerRole()) + " "
+                                + PlayerStatus.fromShort(serverRoomPlayerDTO.getPlayerStatus()));
+            }
         }
     }
 

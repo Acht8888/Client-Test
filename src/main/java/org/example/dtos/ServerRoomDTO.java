@@ -1,6 +1,8 @@
 package org.example.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.utils.BinarySerializer;
 
@@ -10,7 +12,10 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ServerRoomDTO {
+
     @BinarySerializer.FieldOrder(0)
     private UUID id;
 
@@ -32,6 +37,7 @@ public class ServerRoomDTO {
 
     // List of players
     @BinarySerializer.FieldOrder(6)
-    private List<UUID> playerIds;
+    private List<ServerRoomPlayerDTO> playerList;
+
 }
 

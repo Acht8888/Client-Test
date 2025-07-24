@@ -14,5 +14,5 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ClientDeclineFriendRequestDTO {
     @BinarySerializer.FieldOrder(0)
-    UUID requestId;
+    private UUID requestId;
 }

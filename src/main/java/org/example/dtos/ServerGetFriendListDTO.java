@@ -14,5 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 public class ServerGetFriendListDTO {
     @BinarySerializer.FieldOrder(0)
-    List<ServerFriendDTO> friendList;
+    private List<ServerFriendDTO> friendList;
 }

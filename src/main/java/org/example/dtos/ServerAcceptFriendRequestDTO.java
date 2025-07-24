@@ -12,5 +12,5 @@ import org.example.utils.BinarySerializer;
 @NoArgsConstructor
 public class ServerAcceptFriendRequestDTO {
     @BinarySerializer.FieldOrder(0)
-    String targetUsername;
+    private String targetUsername;
 }
