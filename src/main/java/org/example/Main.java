@@ -477,34 +477,30 @@ public class Main {
             processAuthSuccess(payloadBytes);
         } else if (responseType == ServerMessageType.AUTH_FAIL.ordinal()) {
             processAuthFail(payloadBytes);
-        } else if (responseType == ServerMessageType.SEND_FRIEND_REQUEST.ordinal()) {
-            processFriendRequest(payloadBytes);
-        } else if (responseType == ServerMessageType.ACCEPT_FRIEND_REQUEST.ordinal()) {
-            processAcceptFriendRequest(payloadBytes);
-        } else if (responseType == ServerMessageType.DECLINE_FRIEND_REQUEST.ordinal()) {
-            processDeclineFriendRequest(payloadBytes);
-        } else if (responseType == ServerMessageType.FRIEND_EXISTS.ordinal()) {
-            processFriendExists(payloadBytes);
-        } else if (responseType == ServerMessageType.CHAT_TO_USER.ordinal()) {
-            processChatUser(payloadBytes);
-        } else if (responseType == ServerMessageType.CHAT_TO_ROOM.ordinal()) {
-            processChatRoom(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_INFO.ordinal()) {
             processGetUserInfo(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_BY_ID.ordinal()) {
             processGetUserById(payloadBytes);
-        } else if (responseType == ServerMessageType.CREATE_ROOM.ordinal()) {
-            processCreateRoom(payloadBytes);
-        } else if (responseType == ServerMessageType.JOIN_ROOM.ordinal()) {
-            processJoinRoom(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_ROOM_BY_ID.ordinal()) {
-            processGetRoomById(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_ALL_ROOMS.ordinal()) {
-            processGetRooms(payloadBytes);
         } else if (responseType == ServerMessageType.GET_FRIEND_REQUESTS.ordinal()) {
             processGetFriendRequests(payloadBytes);
         } else if (responseType == ServerMessageType.GET_FRIEND_LIST.ordinal()) {
             processGetFriendList(payloadBytes);
+        } else if (responseType == ServerMessageType.FRIEND_EXISTS.ordinal()) {
+            processFriendExists(payloadBytes);
+        } else if (responseType == ServerMessageType.FRIEND_NOT_TARGET.ordinal()) {
+            processFriendNotATarget(payloadBytes);
+        } else if (responseType == ServerMessageType.CHAT_TO_USER.ordinal()) {
+            processChatUser(payloadBytes);
+        } else if (responseType == ServerMessageType.CHAT_TO_ROOM.ordinal()) {
+            processChatRoom(payloadBytes);
+        } else if (responseType == ServerMessageType.CREATE_ROOM.ordinal()) {
+            processCreateRoom(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_ROOM_BY_ID.ordinal()) {
+            processGetRoomById(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_ALL_ROOMS.ordinal()) {
+            processGetRooms(payloadBytes);
+        } else if (responseType == ServerMessageType.ROOM_FULL.ordinal()) {
+            processRoomFull(payloadBytes);
         }
     }
 
@@ -522,33 +518,6 @@ public class Main {
 
         System.out.println("[Auth Fail]");
         System.out.println("- Response: " + serverAuthFailDTO.getResponse());
-    }
-
-    private void processFriendRequest(byte[] payloadBytes) throws Exception {
-        ServerSendFriendRequestDTO serverSendFriendRequestDTO = BinarySerializer.deserializeData(payloadBytes, ServerSendFriendRequestDTO.class);
-
-        System.out.println("[Friend Request]");
-        System.out.println("- Request Id: " + serverSendFriendRequestDTO.getRequestId());
-        System.out.println("- Requester Id: " + serverSendFriendRequestDTO.getRequesterId());
-        System.out.println("- Requester Name: " + serverSendFriendRequestDTO.getRequesterDisplayName());
-    }
-
-    private void processAcceptFriendRequest(byte[] payloadBytes) throws Exception {
-        ServerAcceptFriendRequestDTO serverAcceptFriendRequestDTO = BinarySerializer.deserializeData(payloadBytes, ServerAcceptFriendRequestDTO.class);
-
-        System.out.println("[Accept Friend Request]");
-        System.out.println("- Target Username: " + serverAcceptFriendRequestDTO.getTargetUsername());
-    }
-
-    private void processDeclineFriendRequest(byte[] payloadBytes) throws Exception {
-        ServerDeclineFriendRequestDTO serverDeclineFriendRequestDTO = BinarySerializer.deserializeData(payloadBytes, ServerDeclineFriendRequestDTO.class);
-
-        System.out.println("[Decline Friend Request]");
-        System.out.println("- Target Username: " + serverDeclineFriendRequestDTO.getTargetUsername());
-    }
-
-    private void processFriendExists(byte[] payloadBytes) throws Exception {
-        System.out.println("[Friend Exists]");
     }
 
     private void processGetFriendRequests(byte[] payloadBytes) throws Exception {
@@ -573,6 +542,16 @@ public class Main {
         for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
             System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId() + " " + serverFriendDTO.getFriendDisplayName());
         }
+    }
+
+    private void processFriendExists(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- Friend exists");
+    }
+
+    private void processFriendNotATarget(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- Not a target");
     }
 
     private void processGetUserInfo(byte[] payloadBytes) throws Exception {
@@ -622,15 +601,6 @@ public class Main {
         System.out.println("- Room Id: " + roomId);
     }
 
-    private void processJoinRoom(byte[] payloadBytes) throws Exception {
-        ServerJoinRoomDTO serverJoinRoomDTO = BinarySerializer.deserializeData(payloadBytes, ServerJoinRoomDTO.class);
-
-        UUID roomId = serverJoinRoomDTO.getRoomId();
-
-        System.out.println("[Join Room]");
-        System.out.println("- Room Id: " + roomId);
-    }
-
     private void processGetRoomById(byte[] payloadBytes) throws Exception {
         ServerGetRoomByIdDTO serverGetRoomByIdDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetRoomByIdDTO.class);
 
@@ -663,6 +633,11 @@ public class Main {
                                 + PlayerStatus.fromShort(serverRoomPlayerDTO.getPlayerStatus()));
             }
         }
+    }
+
+    private void processRoomFull(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- Room is full");
     }
 
     private Thread createListenerThread() {

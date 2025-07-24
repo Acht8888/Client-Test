@@ -36,24 +36,23 @@ public enum ServerMessageType {
     CHAT_TO_ROOM,
 
     // ===== Friend System =====
-    SEND_FRIEND_REQUEST,
-    ACCEPT_FRIEND_REQUEST,
-    DECLINE_FRIEND_REQUEST,
     GET_FRIEND_REQUESTS,
     GET_FRIEND_LIST,
 
     // ===== Friend System Error =====
     FRIEND_EXISTS,
+    FRIEND_NOT_TARGET,
 
     // ===== Room System =====
     CREATE_ROOM,
     GET_ROOM_BY_ID,
     GET_ALL_ROOMS,
-    JOIN_ROOM,
-    LEAVE_ROOM,
     READY,
     UNREADY,
     START_GAME,
+
+    // ===== Room System Error =====
+    ROOM_FULL,
 
     // Pings
     PONG,
