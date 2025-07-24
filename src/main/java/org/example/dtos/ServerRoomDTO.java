@@ -32,11 +32,8 @@ public class ServerRoomDTO {
     @BinarySerializer.FieldOrder(4)
     private int currentPlayers;
 
-    @BinarySerializer.FieldOrder(5)
-    private short status;
-
     // List of players
-    @BinarySerializer.FieldOrder(6)
+    @BinarySerializer.FieldOrder(5)
     private List<ServerRoomPlayerDTO> playerList;
 
 }

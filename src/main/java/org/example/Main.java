@@ -4,10 +4,7 @@ package org.example;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.dtos.*;
-import org.example.enums.ClientMessageType;
-import org.example.enums.PlayerRole;
-import org.example.enums.PlayerStatus;
-import org.example.enums.ServerMessageType;
+import org.example.enums.*;
 import org.example.utils.BinarySerializer;
 import org.example.utils.JsonUtils;
 
@@ -600,7 +597,13 @@ public class Main {
         ServerRoomDTO serverRoomDTO = serverGetRoomByIdDTO.getRoom();
 
         System.out.println("[Room]");
-        System.out.println("- " + serverRoomDTO.getId() + " " + serverRoomDTO.getName());
+        System.out.println("- "
+                + serverRoomDTO.getId()
+                + " " + serverRoomDTO.getName()
+                + " " + serverRoomDTO.getCurrentPlayers()
+                + "/" + serverRoomDTO.getMaxPlayers()
+                + " " + RoomType.fromShort(serverRoomDTO.getType())
+                );
         for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomDTO.getPlayerList()) {
             System.out.println(
                     "+ " + serverRoomPlayerDTO.getPlayerId() + " "
@@ -617,7 +620,13 @@ public class Main {
 
         System.out.println("[Rooms]");
         for (ServerRoomDTO serverRoomDTO : serverRoomDTOList) {
-            System.out.println("- " + serverRoomDTO.getId() + " " + serverRoomDTO.getName());
+            System.out.println("- "
+                    + serverRoomDTO.getId()
+                    + " " + serverRoomDTO.getName()
+                    + " " + serverRoomDTO.getCurrentPlayers()
+                    + "/" + serverRoomDTO.getMaxPlayers()
+                    + " " + RoomType.fromShort(serverRoomDTO.getType())
+            );
             for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomDTO.getPlayerList()) {
                 System.out.println(
                         "+ " + serverRoomPlayerDTO.getPlayerId() + " "
