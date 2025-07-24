@@ -88,12 +88,12 @@ public class Main {
                     case "get_user_by_id":
                         String userId = parts[1];
 
-                        handleGetUserById(userId);
+                        handleGetUserById(UUID.fromString(userId));
                         break;
                     case "send_friend_request":
                         String targetId = parts[1];
 
-                        handleFriendRequest(targetId);
+                        handleFriendRequest(UUID.fromString(targetId));
                         break;
                     case "accept_friend_request":
                         String requestId = parts[1];
@@ -154,7 +154,7 @@ public class Main {
                         targetId = tokens[0];
                         message = tokens[1];
 
-                        handleChatUser(targetId, message);
+                        handleChatUser(UUID.fromString(targetId), message);
                         break;
                     case "chat_to_room":
                         tokens = parts[1].split(" ", 2);
@@ -303,12 +303,12 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleGetUserById(String userId) throws Exception {
+    private void handleGetUserById(UUID userId) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.GET_USER_BY_ID.ordinal();
 
-        ClientGetUserByIdDTO clientGetUserByIdDTO = new ClientGetUserByIdDTO(UUID.fromString(userId));
+        ClientGetUserByIdDTO clientGetUserByIdDTO = new ClientGetUserByIdDTO(userId);
 
         byte[] serializedData = BinarySerializer.serializeData(clientGetUserByIdDTO);
 
@@ -333,22 +333,28 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleChatUser(String targetId, String message) throws Exception {
+    private void handleChatUser(UUID targetId, String message) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.CHAT_TO_USER.ordinal();
+
+        ClientChatUserDTO clientChatUserDTO = new ClientChatUserDTO(targetId, message);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientChatUserDTO);
+
+        sendMessage(methodCode, serializedData);
     }
 
     private void handleChatRoom(String roomId, String message) throws Exception {
 
     }
 
-    private void handleFriendRequest(String targetId) throws  Exception {
+    private void handleFriendRequest(UUID targetId) throws  Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.SEND_FRIEND_REQUEST.ordinal();
 
-        ClientSendFriendRequestDTO clientSendFriendRequestDTO = new ClientSendFriendRequestDTO(UUID.fromString(targetId));
+        ClientSendFriendRequestDTO clientSendFriendRequestDTO = new ClientSendFriendRequestDTO(targetId);
 
         byte[] serializedData = BinarySerializer.serializeData(clientSendFriendRequestDTO);
 
@@ -495,7 +501,7 @@ public class Main {
         } else if (responseType == ServerMessageType.DECLINE_FRIEND_REQUEST.ordinal()) {
             processDeclineFriendRequest(payloadBytes);
         } else if (responseType == ServerMessageType.CHAT_TO_USER.ordinal()) {
-            processChat(payloadBytes);
+            processChatUser(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_INFO.ordinal()) {
             processGetUserInfo(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_BY_ID.ordinal()) {
@@ -598,11 +604,13 @@ public class Main {
         System.out.println("- Level: " + serverUserDTO.getLevel());
     }
 
-    private void processChat(byte[] payloadBytes) throws Exception {
-        ServerChatDTO serverChatDTO = BinarySerializer.deserializeData(payloadBytes, ServerChatDTO.class);
+    private void processChatUser(byte[] payloadBytes) throws Exception {
+        ServerChatUserDTO serverChatUserDTO = BinarySerializer.deserializeData(payloadBytes, ServerChatUserDTO.class);
 
         System.out.println("[Chatting]");
-        System.out.println("- Message: " + serverChatDTO.getChatMessage());
+        System.out.println("- Requester Id: " + serverChatUserDTO.getRequesterId());
+        System.out.println("- Requester Name: " + serverChatUserDTO.getRequesterDisplayName());
+        System.out.println("- Message: " + serverChatUserDTO.getMessage());
     }
 
     private void processCreateRoom(byte[] payloadBytes) throws Exception {
