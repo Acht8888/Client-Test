@@ -90,13 +90,6 @@ public class Main {
 
                         handleGetUserById(userId);
                         break;
-                    case "chat_with":
-                        tokens = parts[1].split(" ", 2);
-                        String targetIds = tokens[0];
-                        String message = tokens[1];
-
-                        handleChat(targetIds, message);
-                        break;
                     case "send_friend_request":
                         String targetId = parts[1];
 
@@ -148,6 +141,27 @@ public class Main {
                         roomId = parts[1];
 
                         handleLeaveRoomRequest(UUID.fromString(roomId));
+                        break;
+                    case "chat_with":
+                        tokens = parts[1].split(" ", 2);
+                        String targetIds = tokens[0];
+                        String message = tokens[1];
+
+                        handleChat(targetIds, message);
+                        break;
+                    case "chat_to_user":
+                        tokens = parts[1].split(" ", 2);
+                        targetId = tokens[0];
+                        message = tokens[1];
+
+                        handleChatUser(targetId, message);
+                        break;
+                    case "chat_to_room":
+                        tokens = parts[1].split(" ", 2);
+                        roomId = tokens[0];
+                        message = tokens[1];
+
+                        handleChatRoom(roomId, message);
                         break;
                     case "disconnect":
                         handleDisconnect();
@@ -304,7 +318,7 @@ public class Main {
     private void handleChat(String targetIds, String message) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.SEND_CHAT_TO_USER.ordinal();
+        short methodCode = (short) ClientMessageType.CHAT_TO_USER.ordinal();
 
         String[] participantsStr = targetIds.split(",");
         UUID[] uuidArray = new UUID[participantsStr.length];
@@ -317,6 +331,16 @@ public class Main {
         byte[] serializedData = BinarySerializer.serializeData(clientChatDTO);
 
         sendMessage(methodCode, serializedData);
+    }
+
+    private void handleChatUser(String targetId, String message) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.CHAT_TO_USER.ordinal();
+    }
+
+    private void handleChatRoom(String roomId, String message) throws Exception {
+
     }
 
     private void handleFriendRequest(String targetId) throws  Exception {
@@ -470,7 +494,7 @@ public class Main {
             processAcceptFriendRequest(payloadBytes);
         } else if (responseType == ServerMessageType.DECLINE_FRIEND_REQUEST.ordinal()) {
             processDeclineFriendRequest(payloadBytes);
-        } else if (responseType == ServerMessageType.SEND_CHAT_TO_USER.ordinal()) {
+        } else if (responseType == ServerMessageType.CHAT_TO_USER.ordinal()) {
             processChat(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_INFO.ordinal()) {
             processGetUserInfo(payloadBytes);

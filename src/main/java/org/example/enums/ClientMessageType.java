@@ -60,8 +60,8 @@ public enum ClientMessageType {
     GIVE_FEEDBACK,
 
     // ===== Chat =====
-    SEND_CHAT_TO_USER,
-    SEND_CHAT_TO_ROOM,
+    CHAT_TO_USER,
+    CHAT_TO_ROOM,
 
     // ===== Test =====
     HELLO

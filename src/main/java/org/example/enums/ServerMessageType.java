@@ -32,8 +32,8 @@ public enum ServerMessageType {
 
     // ===== Chat =====
     CHAT_BROADCAST,
-    SEND_CHAT_TO_USER,
-    SEND_CHAT_TO_ROOM,
+    CHAT_TO_USER,
+    CHAT_TO_ROOM,
 
     // ===== Friend System =====
     SEND_FRIEND_REQUEST,
