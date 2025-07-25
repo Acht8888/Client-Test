@@ -44,11 +44,12 @@ public enum ServerMessageType {
 
     // ===== Room System =====
     CREATE_ROOM,
-    GET_ROOM_BY_ID,
-    GET_ALL_ROOMS,
     READY,
     UNREADY,
     START_GAME,
+    GET_ROOM_INFO,
+    GET_ROOM_BY_ID,
+    GET_ALL_ROOMS,
 
     // ===== Room System Error =====
     ROOM_FULL,

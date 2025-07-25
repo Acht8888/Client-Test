@@ -21,13 +21,14 @@ public enum ClientMessageType {
 
     // ===== Room =====
     CREATE_ROOM,
-    GET_ROOM_BY_ID,
-    GET_ALL_ROOMS,
     JOIN_ROOM,
     LEAVE_ROOM,
     READY,
     UNREADY,
     START_GAME,
+    GET_ROOM_INFO,
+    GET_ROOM_BY_ID,
+    GET_ALL_ROOMS,
 
     // ===== Friend System =====
     SEND_FRIEND_REQUEST,

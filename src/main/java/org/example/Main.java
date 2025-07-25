@@ -121,6 +121,9 @@ public class Main {
 
                         handleCreateRoomRequest(roomName, roomType, maxPlayers);
                         break;
+                    case "get_room_info":
+                        handleGetRoomInfo();
+                        break;
                     case "get_room_by_id":
                         String roomId = parts[1];
 
@@ -138,6 +141,12 @@ public class Main {
                         roomId = parts[1];
 
                         handleLeaveRoomRequest(UUID.fromString(roomId));
+                        break;
+                    case "ready":
+                        handleReady();
+                        break;
+                    case "unready":
+                        handleUnready();
                         break;
                     case "chat_to_user":
                         tokens = parts[1].split(" ", 2);
@@ -305,30 +314,6 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleChatUser(UUID targetId, String message) throws Exception {
-        if (!ensureConnection()) return;
-
-        short methodCode = (short) ClientMessageType.CHAT_TO_USER.ordinal();
-
-        ClientChatUserDTO clientChatUserDTO = new ClientChatUserDTO(targetId, message);
-
-        byte[] serializedData = BinarySerializer.serializeData(clientChatUserDTO);
-
-        sendMessage(methodCode, serializedData);
-    }
-
-    private void handleChatRoom(UUID roomId, String message) throws Exception {
-        if (!ensureConnection()) return;
-
-        short methodCode = (short) ClientMessageType.CHAT_TO_ROOM.ordinal();
-
-        ClientChatRoomDTO clientChatRoomDTO = new ClientChatRoomDTO(roomId, message);
-
-        byte[] serializedData = BinarySerializer.serializeData(clientChatRoomDTO);
-
-        sendMessage(methodCode, serializedData);
-    }
-
     private void handleFriendRequest(UUID targetId) throws  Exception {
         if (!ensureConnection()) return;
 
@@ -412,10 +397,10 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleGetRoomsRequest() throws Exception {
+    private void handleGetRoomInfo() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.GET_ALL_ROOMS.ordinal();
+        short methodCode = (short) ClientMessageType.GET_ROOM_INFO.ordinal();
 
         sendMessage(methodCode, new byte[0]);
     }
@@ -430,6 +415,14 @@ public class Main {
         byte[] serializedData = BinarySerializer.serializeData(getRoomByIdDTO);
 
         sendMessage(methodCode, serializedData);
+    }
+
+    private void handleGetRoomsRequest() throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.GET_ALL_ROOMS.ordinal();
+
+        sendMessage(methodCode, new byte[0]);
     }
 
     private void handleJoinRoomRequest(UUID roomId) throws Exception {
@@ -452,6 +445,46 @@ public class Main {
         ClientLeaveRoomDTO clientLeaveRoomDTO = new ClientLeaveRoomDTO(roomId);
 
         byte[] serializedData = BinarySerializer.serializeData(clientLeaveRoomDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
+
+    private void handleReady() throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.READY.ordinal();
+
+        sendMessage(methodCode, new byte[0]);
+    }
+
+    private void handleUnready() throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.UNREADY.ordinal();
+
+        sendMessage(methodCode, new byte[0]);
+    }
+
+    private void handleChatUser(UUID targetId, String message) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.CHAT_TO_USER.ordinal();
+
+        ClientChatUserDTO clientChatUserDTO = new ClientChatUserDTO(targetId, message);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientChatUserDTO);
+
+        sendMessage(methodCode, serializedData);
+    }
+
+    private void handleChatRoom(UUID roomId, String message) throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.CHAT_TO_ROOM.ordinal();
+
+        ClientChatRoomDTO clientChatRoomDTO = new ClientChatRoomDTO(roomId, message);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientChatRoomDTO);
 
         sendMessage(methodCode, serializedData);
     }
@@ -490,6 +523,8 @@ public class Main {
             processChatRoom(payloadBytes);
         } else if (responseType == ServerMessageType.CREATE_ROOM.ordinal()) {
             processCreateRoom(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_ROOM_INFO.ordinal()) {
+            processGetRoomInfo(payloadBytes);
         } else if (responseType == ServerMessageType.GET_ROOM_BY_ID.ordinal()) {
             processGetRoomById(payloadBytes);
         } else if (responseType == ServerMessageType.GET_ALL_ROOMS.ordinal()) {
@@ -591,26 +626,22 @@ public class Main {
         System.out.println("- Room Id: " + roomId);
     }
 
+    private void processGetRoomInfo(byte[] payloadBytes) throws Exception {
+        ServerGetRoomInfoDTO serverGetRoomInfoDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetRoomInfoDTO.class);
+
+        ServerRoomDTO serverRoomDTO = serverGetRoomInfoDTO.getRoom();
+
+        System.out.println("[Room]");
+        printServerRoomDTO(serverRoomDTO);
+    }
+
     private void processGetRoomById(byte[] payloadBytes) throws Exception {
         ServerGetRoomByIdDTO serverGetRoomByIdDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetRoomByIdDTO.class);
 
         ServerRoomDTO serverRoomDTO = serverGetRoomByIdDTO.getRoom();
 
         System.out.println("[Room]");
-        System.out.println("- "
-                + serverRoomDTO.getId()
-                + " " + serverRoomDTO.getName()
-                + " " + serverRoomDTO.getCurrentPlayers()
-                + "/" + serverRoomDTO.getMaxPlayers()
-                + " " + RoomType.fromShort(serverRoomDTO.getType())
-                );
-        for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomDTO.getPlayerList()) {
-            System.out.println(
-                    "+ " + serverRoomPlayerDTO.getPlayerId() + " "
-                            + serverRoomPlayerDTO.getPlayerDisplayName() + " "
-                            + PlayerRole.fromShort(serverRoomPlayerDTO.getPlayerRole()) + " "
-                            + PlayerStatus.fromShort(serverRoomPlayerDTO.getPlayerStatus()));
-        }
+        printServerRoomDTO(serverRoomDTO);
     }
 
     private void processGetRooms(byte[] payloadBytes) throws Exception {
@@ -620,20 +651,7 @@ public class Main {
 
         System.out.println("[Rooms]");
         for (ServerRoomDTO serverRoomDTO : serverRoomDTOList) {
-            System.out.println("- "
-                    + serverRoomDTO.getId()
-                    + " " + serverRoomDTO.getName()
-                    + " " + serverRoomDTO.getCurrentPlayers()
-                    + "/" + serverRoomDTO.getMaxPlayers()
-                    + " " + RoomType.fromShort(serverRoomDTO.getType())
-            );
-            for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomDTO.getPlayerList()) {
-                System.out.println(
-                        "+ " + serverRoomPlayerDTO.getPlayerId() + " "
-                                + serverRoomPlayerDTO.getPlayerDisplayName() + " "
-                                + PlayerRole.fromShort(serverRoomPlayerDTO.getPlayerRole()) + " "
-                                + PlayerStatus.fromShort(serverRoomPlayerDTO.getPlayerStatus()));
-            }
+            printServerRoomDTO(serverRoomDTO);
         }
     }
 
@@ -750,6 +768,23 @@ public class Main {
 
     private void stopWork() {
         isBusy = false;
+    }
+
+    private void printServerRoomDTO(ServerRoomDTO serverRoomDTO) {
+        System.out.println("- "
+                + serverRoomDTO.getId()
+                + " " + serverRoomDTO.getName()
+                + " " + serverRoomDTO.getCurrentPlayers()
+                + "/" + serverRoomDTO.getMaxPlayers()
+                + " " + RoomType.fromShort(serverRoomDTO.getType())
+        );
+        for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomDTO.getPlayerList()) {
+            System.out.println(
+                    "+ " + serverRoomPlayerDTO.getPlayerId() + " "
+                            + serverRoomPlayerDTO.getPlayerDisplayName() + " "
+                            + PlayerRole.fromShort(serverRoomPlayerDTO.getPlayerRole()) + " "
+                            + PlayerStatus.fromShort(serverRoomPlayerDTO.getPlayerStatus()));
+        }
     }
 
 }
