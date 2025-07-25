@@ -158,11 +158,9 @@ public class Main {
                         handleChatUser(UUID.fromString(targetId), message);
                         break;
                     case "chat_to_room":
-                        tokens = parts[1].split(" ", 2);
-                        roomId = tokens[0];
-                        message = tokens[1];
+                        message = parts[1];
 
-                        handleChatRoom(UUID.fromString(roomId), message);
+                        handleChatRoom(message);
                         break;
                     case "disconnect":
                         handleDisconnect();
@@ -486,12 +484,12 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleChatRoom(UUID roomId, String message) throws Exception {
+    private void handleChatRoom(String message) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.CHAT_TO_ROOM.ordinal();
 
-        ClientChatRoomDTO clientChatRoomDTO = new ClientChatRoomDTO(roomId, message);
+        ClientChatRoomDTO clientChatRoomDTO = new ClientChatRoomDTO(message);
 
         byte[] serializedData = BinarySerializer.serializeData(clientChatRoomDTO);
 
