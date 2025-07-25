@@ -148,6 +148,9 @@ public class Main {
                     case "unready":
                         handleUnready();
                         break;
+                    case "start_game":
+                        handleStartGame();
+                        break;
                     case "chat_to_user":
                         tokens = parts[1].split(" ", 2);
                         targetId = tokens[0];
@@ -462,6 +465,14 @@ public class Main {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.UNREADY.ordinal();
+
+        sendMessage(methodCode, new byte[0]);
+    }
+
+    private void handleStartGame() throws Exception {
+        if (!ensureConnection()) return;
+
+        short methodCode = (short) ClientMessageType.START_GAME.ordinal();
 
         sendMessage(methodCode, new byte[0]);
     }
