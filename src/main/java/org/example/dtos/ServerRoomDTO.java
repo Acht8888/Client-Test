@@ -24,16 +24,19 @@ public class ServerRoomDTO {
     private String name;
 
     @BinarySerializer.FieldOrder(2)
-    private short type;
+    private short mode;
 
     @BinarySerializer.FieldOrder(3)
-    private int maxPlayers;
+    private short type;
 
     @BinarySerializer.FieldOrder(4)
+    private int maxPlayers;
+
+    @BinarySerializer.FieldOrder(5)
     private int currentPlayers;
 
     // List of players
-    @BinarySerializer.FieldOrder(5)
+    @BinarySerializer.FieldOrder(6)
     private List<ServerRoomPlayerDTO> playerList;
 
 }

@@ -116,10 +116,12 @@ public class Main {
                     case "create_room":
                         tokens = parts[1].split(" ");
                         String roomName = tokens[0];
-                        String roomType = tokens[1];
-                        String maxPlayers = tokens[2];
+                        String gameMode = tokens[1];
+                        String roomType = tokens[2];
+                        String maxPlayers = tokens[3];
 
-                        handleCreateRoomRequest(roomName, roomType, maxPlayers);
+
+                        handleCreateRoomRequest(roomName, gameMode, roomType, maxPlayers);
                         break;
                     case "get_room_info":
                         handleGetRoomInfo();
@@ -378,10 +380,17 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleCreateRoomRequest(String roomName, String roomType, String maxPlayers) throws Exception {
+    private void handleCreateRoomRequest(String roomName, String gameMode, String roomType, String maxPlayers) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.CREATE_ROOM.ordinal();
+
+        short gameModeShort = 0;
+        if (roomType.equalsIgnoreCase("co_op")) {
+            gameModeShort = 0;
+        } else if (roomType.equalsIgnoreCase("pvp")) {
+            gameModeShort = 1;
+        }
 
         short roomTypeShort = 0;
         if (roomType.equalsIgnoreCase("public")) {
@@ -390,7 +399,7 @@ public class Main {
             roomTypeShort = 1;
         }
 
-        ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, roomTypeShort, Integer.parseInt(maxPlayers));
+        ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, gameModeShort, roomTypeShort, Integer.parseInt(maxPlayers));
 
         byte[] serializedData = BinarySerializer.serializeData(clientCreateRoomDTO);
 
@@ -776,6 +785,7 @@ public class Main {
                 + " " + serverRoomDTO.getName()
                 + " " + serverRoomDTO.getCurrentPlayers()
                 + "/" + serverRoomDTO.getMaxPlayers()
+                + " " + GameMode.fromShort(serverRoomDTO.getMode())
                 + " " + RoomType.fromShort(serverRoomDTO.getType())
         );
         for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomDTO.getPlayerList()) {
