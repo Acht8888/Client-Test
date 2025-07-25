@@ -140,9 +140,7 @@ public class Main {
                         handleJoinRoomRequest(UUID.fromString(roomId));
                         break;
                     case "leave_room":
-                        roomId = parts[1];
-
-                        handleLeaveRoomRequest(UUID.fromString(roomId));
+                        handleLeaveRoomRequest();
                         break;
                     case "ready":
                         handleReady();
@@ -444,16 +442,12 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleLeaveRoomRequest(UUID roomId) throws Exception {
+    private void handleLeaveRoomRequest() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.LEAVE_ROOM.ordinal();
 
-        ClientLeaveRoomDTO clientLeaveRoomDTO = new ClientLeaveRoomDTO(roomId);
-
-        byte[] serializedData = BinarySerializer.serializeData(clientLeaveRoomDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(methodCode, new byte[0]);
     }
 
     private void handleReady() throws Exception {
