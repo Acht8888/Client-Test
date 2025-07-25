@@ -385,9 +385,9 @@ public class Main {
         short methodCode = (short) ClientMessageType.CREATE_ROOM.ordinal();
 
         short gameModeShort = 0;
-        if (roomType.equalsIgnoreCase("co_op")) {
+        if (gameMode.equalsIgnoreCase("co_op")) {
             gameModeShort = 0;
-        } else if (roomType.equalsIgnoreCase("pvp")) {
+        } else if (gameMode.equalsIgnoreCase("pvp")) {
             gameModeShort = 1;
         }
 
