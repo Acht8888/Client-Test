@@ -865,6 +865,7 @@ public class Main {
     private void customFunctions() throws Exception {
         handleLogin(MyConfig.username, MyConfig.password);
         handleAuthInstant();
+        handleReconnectInstant();
     }
 
 }
