@@ -42,8 +42,7 @@ public class Main {
     public void start() throws Exception {
         Scanner scanner = new Scanner(System.in);
 
-        handleLogin(MyConfig.username, MyConfig.password);
-        handleAuthInstant();
+        MyConfig.customFunctions();
 
         while (true) {
             System.out.print("Enter command: ");
