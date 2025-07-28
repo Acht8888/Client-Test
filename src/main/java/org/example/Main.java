@@ -42,7 +42,7 @@ public class Main {
     public void start() throws Exception {
         Scanner scanner = new Scanner(System.in);
 
-        MyConfig.customFunctions();
+        customFunctions();
 
         while (true) {
             System.out.print("Enter command: ");
@@ -860,6 +860,11 @@ public class Main {
                             + PlayerRole.fromShort(serverRoomPlayerDTO.getPlayerRole()) + " "
                             + PlayerStatus.fromShort(serverRoomPlayerDTO.getPlayerStatus()));
         }
+    }
+
+    private void customFunctions() throws Exception {
+        handleLogin(MyConfig.username, MyConfig.password);
+        handleAuthInstant();
     }
 
 }
