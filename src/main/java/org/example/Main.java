@@ -553,6 +553,8 @@ public class Main {
             processNotInRoom(payloadBytes);
         } else if (responseType == ServerMessageType.ONLY_LEADER.ordinal()) {
             processOnlyLeader(payloadBytes);
+        } else if (responseType == ServerMessageType.GAME_STATE.ordinal()) {
+            processGameState(payloadBytes);
         }
     }
 
@@ -712,6 +714,10 @@ public class Main {
     private void processOnlyLeader(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
         System.out.println("- Only leader can start game");
+    }
+
+    private void processGameState(byte[] payloadBytes) throws Exception {
+        System.out.println("[Game State]");
     }
 
     private Thread createListenerThread() {
