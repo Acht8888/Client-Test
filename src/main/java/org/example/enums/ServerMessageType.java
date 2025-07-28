@@ -50,6 +50,8 @@ public enum ServerMessageType {
     GET_ROOM_BY_ID,
     GET_ALL_ROOMS,
 
+    GET_PLAYER_ID,
+
     // ===== Room System Error =====
     ROOM_FULL,
     PLAYER_NOT_READY,

@@ -555,6 +555,8 @@ public class Main {
             processOnlyLeader(payloadBytes);
         } else if (responseType == ServerMessageType.GAME_STATE.ordinal()) {
             processGameState(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_PLAYER_ID.ordinal()) {
+            processGetPlayerId(payloadBytes);
         }
     }
 
@@ -719,6 +721,14 @@ public class Main {
     private void processGameState(byte[] payloadBytes) throws Exception {
         System.out.println("[Game State]");
     }
+
+    private void processGetPlayerId(byte[] payloadBytes) throws Exception {
+        ServerPlayerIdDTO serverPlayerIdDTO = BinarySerializer.deserializeData(payloadBytes, ServerPlayerIdDTO.class);
+
+        System.out.println("[Game Player Id]");
+        System.out.println("- Player Id: " + serverPlayerIdDTO.getPlayerId());
+    }
+
 
     private Thread createListenerThread() {
         return new Thread(() -> {
