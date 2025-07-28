@@ -53,6 +53,8 @@ public enum ServerMessageType {
     // ===== Room System Error =====
     ROOM_FULL,
     PLAYER_NOT_READY,
+    IN_ROOM,
+    ONLY_LEADER,
 
     // Pings
     PONG,

@@ -547,6 +547,10 @@ public class Main {
             processRoomFull(payloadBytes);
         } else if (responseType == ServerMessageType.PLAYER_NOT_READY.ordinal()) {
             processPlayerNotReady(payloadBytes);
+        } else if (responseType == ServerMessageType.IN_ROOM.ordinal()) {
+            processInRoom(payloadBytes);
+        } else if (responseType == ServerMessageType.ONLY_LEADER.ordinal()) {
+            processOnlyLeader(payloadBytes);
         }
     }
 
@@ -691,6 +695,16 @@ public class Main {
     private void processPlayerNotReady(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
         System.out.println("- A Player is not ready");
+    }
+
+    private void processInRoom(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- Player is already in a room");
+    }
+
+    private void processOnlyLeader(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- Only leader can start game");
     }
 
     private Thread createListenerThread() {
