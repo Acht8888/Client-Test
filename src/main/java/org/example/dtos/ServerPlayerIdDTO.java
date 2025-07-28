@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.utils.BinarySerializer;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -13,4 +15,7 @@ import org.example.utils.BinarySerializer;
 public class ServerPlayerIdDTO {
     @BinarySerializer.FieldOrder(0)
     String playerId;
+
+    @BinarySerializer.FieldOrder(1)
+    List<String> playerIds;
 }

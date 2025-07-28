@@ -727,6 +727,11 @@ public class Main {
 
         System.out.println("[Game Player Id]");
         System.out.println("- Player Id: " + serverPlayerIdDTO.getPlayerId());
+
+        System.out.println("[Game Player List]");
+        for (String playerId : serverPlayerIdDTO.getPlayerIds()) {
+            System.out.println("- Player Id: " + playerId);
+        }
     }
 
 

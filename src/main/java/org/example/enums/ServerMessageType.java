@@ -49,7 +49,6 @@ public enum ServerMessageType {
     GET_ROOM_INFO,
     GET_ROOM_BY_ID,
     GET_ALL_ROOMS,
-
     GET_PLAYER_ID,
 
     // ===== Room System Error =====
