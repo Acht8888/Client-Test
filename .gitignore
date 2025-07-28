@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+## Mine ##
+src/main/java/org/example/config.java

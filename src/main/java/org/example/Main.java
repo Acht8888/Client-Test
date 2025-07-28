@@ -42,7 +42,8 @@ public class Main {
     public void start() throws Exception {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("=== TCP Binary Client ===");
+        handleLogin(MyConfig.username, MyConfig.password);
+        handleAuthInstant();
 
         while (true) {
             System.out.print("Enter command: ");
@@ -164,13 +165,6 @@ public class Main {
                     case "disconnect":
                         handleDisconnect();
                         break;
-//                    case "exit":
-//                        if (connected) {
-//                            handleDisconnect();
-//                        }
-//                        closeConnection();
-//                        System.out.println("Goodbye!");
-//                        return;
                     default:
                         System.out.println("Unknown command.");
                 }
@@ -185,7 +179,7 @@ public class Main {
         }
     }
 
-    private void handleRegister(String username, String password, String confirmPassword, String displayName) throws Exception {
+    public void handleRegister(String username, String password, String confirmPassword, String displayName) throws Exception {
         URL url = new URL("http://localhost:8080/users/register");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -225,7 +219,7 @@ public class Main {
         System.out.println("Response message: " + message);
     }
 
-    private void handleLogin(String username, String password) throws Exception {
+    public void handleLogin(String username, String password) throws Exception {
         URL url = new URL("http://localhost:8080/users/login");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -268,7 +262,7 @@ public class Main {
         this.jwt = token;
     }
 
-    private void handleAuthInstant() throws Exception {
+    public void handleAuthInstant() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.AUTH_REQUEST.ordinal();
@@ -280,7 +274,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleReconnectInstant() throws Exception {
+    public void handleReconnectInstant() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.RECONNECT.ordinal();
@@ -293,7 +287,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleGetUserInfo() throws Exception {
+    public void handleGetUserInfo() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.GET_USER_INFO.ordinal();
@@ -301,7 +295,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleGetUserById(UUID userId) throws Exception {
+    public void handleGetUserById(UUID userId) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.GET_USER_BY_ID.ordinal();
@@ -313,7 +307,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleFriendRequest(UUID targetId) throws  Exception {
+    public void handleFriendRequest(UUID targetId) throws  Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.SEND_FRIEND_REQUEST.ordinal();
@@ -325,7 +319,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleAcceptFriendRequest(UUID requestId) throws Exception {
+    public void handleAcceptFriendRequest(UUID requestId) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.ACCEPT_FRIEND_REQUEST.ordinal();
@@ -337,7 +331,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleDeclineFriendRequest(UUID requestId) throws Exception {
+    public void handleDeclineFriendRequest(UUID requestId) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.DECLINE_FRIEND_REQUEST.ordinal();
@@ -349,7 +343,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleRemoveFriend(UUID requestId) throws Exception {
+    public void handleRemoveFriend(UUID requestId) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.REMOVE_FRIEND.ordinal();
@@ -361,7 +355,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleGetFriendRequests() throws Exception {
+    public void handleGetFriendRequests() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.GET_FRIEND_REQUESTS.ordinal();
@@ -369,7 +363,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleGetFriendList() throws Exception {
+    public void handleGetFriendList() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.GET_FRIEND_LIST.ordinal();
@@ -377,7 +371,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleCreateRoomRequest(String roomName, String gameMode, String roomType) throws Exception {
+    public void handleCreateRoomRequest(String roomName, String gameMode, String roomType) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.CREATE_ROOM.ordinal();
@@ -403,7 +397,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleGetRoomInfo() throws Exception {
+    public void handleGetRoomInfo() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.GET_ROOM_INFO.ordinal();
@@ -411,7 +405,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleGetRoomById(UUID roomId) throws Exception {
+    public void handleGetRoomById(UUID roomId) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.GET_ROOM_BY_ID.ordinal();
@@ -423,7 +417,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleGetRoomsRequest() throws Exception {
+    public void handleGetRoomsRequest() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.GET_ALL_ROOMS.ordinal();
@@ -431,7 +425,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleJoinRoomRequest(UUID roomId) throws Exception {
+    public void handleJoinRoomRequest(UUID roomId) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.JOIN_ROOM.ordinal();
@@ -443,7 +437,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleLeaveRoomRequest() throws Exception {
+    public void handleLeaveRoomRequest() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.LEAVE_ROOM.ordinal();
@@ -451,7 +445,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleReady() throws Exception {
+    public void handleReady() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.READY.ordinal();
@@ -459,7 +453,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleUnready() throws Exception {
+    public void handleUnready() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.UNREADY.ordinal();
@@ -467,7 +461,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleStartGame() throws Exception {
+    public void handleStartGame() throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.START_GAME.ordinal();
@@ -475,7 +469,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleChatUser(UUID targetId, String message) throws Exception {
+    public void handleChatUser(UUID targetId, String message) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.CHAT_TO_USER.ordinal();
@@ -487,7 +481,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleChatRoom(String message) throws Exception {
+    public void handleChatRoom(String message) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.CHAT_TO_ROOM.ordinal();
@@ -499,7 +493,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    private void handleDisconnect() throws Exception {
+    public void handleDisconnect() throws Exception {
         if (!connected) {
             System.out.println("Not connected to server");
             return;
