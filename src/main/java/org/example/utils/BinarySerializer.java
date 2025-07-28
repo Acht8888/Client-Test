@@ -94,12 +94,17 @@ public class BinarySerializer {
             out.writeBoolean(value != null && (boolean) value);
         } else if (type == String.class) {  // Explicitly handle String type
             String str = (String) value;
-            out.writeShort(str != null ? str.length() : 0);  // Write the length of the string
             if (str != null) {
-                out.writeChars(str);  // Write the string as a sequence of characters
+                out.writeShort((short)str.length());
+                for (char ch : str.toCharArray()) {
+                    out.writeChar(ch);
+                }
+            } else {
+                out.writeShort(0);
             }
         } else if (type == UUID.class) {  // Handle UUID type
             UUID uuid = (UUID) value;
+            out.writeShort((short)8);
             out.writeLong(uuid.getMostSignificantBits());  // Write the most significant bits
             out.writeLong(uuid.getLeastSignificantBits());  // Write the least significant bits
         } else if (type.isArray()) {
@@ -148,6 +153,7 @@ public class BinarySerializer {
             return new String(chars);  // Convert the char array to a String and return it
         }
         if (type == UUID.class) {  // Handle UUID type
+            in.readShort();
             long mostSigBits = in.readLong();  // Read the most significant bits of UUID
             long leastSigBits = in.readLong();  // Read the least significant bits of UUID
             return new UUID(mostSigBits, leastSigBits);  // Return the UUID object
