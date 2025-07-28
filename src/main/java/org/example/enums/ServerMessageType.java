@@ -54,6 +54,7 @@ public enum ServerMessageType {
     ROOM_FULL,
     PLAYER_NOT_READY,
     IN_ROOM,
+    NOT_IN_ROOM,
     ONLY_LEADER,
 
     // Pings

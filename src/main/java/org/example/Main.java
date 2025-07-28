@@ -549,6 +549,8 @@ public class Main {
             processPlayerNotReady(payloadBytes);
         } else if (responseType == ServerMessageType.IN_ROOM.ordinal()) {
             processInRoom(payloadBytes);
+        } else if (responseType == ServerMessageType.NOT_IN_ROOM.ordinal()) {
+            processNotInRoom(payloadBytes);
         } else if (responseType == ServerMessageType.ONLY_LEADER.ordinal()) {
             processOnlyLeader(payloadBytes);
         }
@@ -694,12 +696,17 @@ public class Main {
 
     private void processPlayerNotReady(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
-        System.out.println("- A Player is not ready");
+        System.out.println("- A player is not ready");
     }
 
     private void processInRoom(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
         System.out.println("- Player is already in a room");
+    }
+
+    private void processNotInRoom(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- Player is not in a room");
     }
 
     private void processOnlyLeader(byte[] payloadBytes) throws Exception {
