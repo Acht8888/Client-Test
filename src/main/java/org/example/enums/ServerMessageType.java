@@ -44,15 +44,15 @@ public enum ServerMessageType {
 
     // ===== Room System =====
     CREATE_ROOM,
-    READY,
-    UNREADY,
     START_GAME,
+    MATCH_MAKING,
     GET_ROOM_INFO,
     GET_ROOM_BY_ID,
     GET_ALL_ROOMS,
 
     // ===== Room System Error =====
     ROOM_FULL,
+    PLAYER_NOT_READY,
 
     // Pings
     PONG,

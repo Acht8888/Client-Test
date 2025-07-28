@@ -21,9 +21,12 @@ public class ServerRoomPlayerDTO {
     private String playerDisplayName;
 
     @BinarySerializer.FieldOrder(2)
-    private short playerRole;
+    private int level;
 
     @BinarySerializer.FieldOrder(3)
+    private short playerRole;
+
+    @BinarySerializer.FieldOrder(4)
     private short playerStatus;
 
 }

@@ -118,10 +118,8 @@ public class Main {
                         String roomName = tokens[0];
                         String gameMode = tokens[1];
                         String roomType = tokens[2];
-                        String maxPlayers = tokens[3];
 
-
-                        handleCreateRoomRequest(roomName, gameMode, roomType, maxPlayers);
+                        handleCreateRoomRequest(roomName, gameMode, roomType);
                         break;
                     case "get_room_info":
                         handleGetRoomInfo();
@@ -379,7 +377,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    private void handleCreateRoomRequest(String roomName, String gameMode, String roomType, String maxPlayers) throws Exception {
+    private void handleCreateRoomRequest(String roomName, String gameMode, String roomType) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.CREATE_ROOM.ordinal();
@@ -398,7 +396,7 @@ public class Main {
             roomTypeShort = 1;
         }
 
-        ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, gameModeShort, roomTypeShort, Integer.parseInt(maxPlayers));
+        ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, gameModeShort, roomTypeShort);
 
         byte[] serializedData = BinarySerializer.serializeData(clientCreateRoomDTO);
 
@@ -535,6 +533,10 @@ public class Main {
             processChatRoom(payloadBytes);
         } else if (responseType == ServerMessageType.CREATE_ROOM.ordinal()) {
             processCreateRoom(payloadBytes);
+        } else if (responseType == ServerMessageType.START_GAME.ordinal()) {
+            processStartGame(payloadBytes);
+        } else if (responseType == ServerMessageType.MATCH_MAKING.ordinal()) {
+            processMatchMaking(payloadBytes);
         } else if (responseType == ServerMessageType.GET_ROOM_INFO.ordinal()) {
             processGetRoomInfo(payloadBytes);
         } else if (responseType == ServerMessageType.GET_ROOM_BY_ID.ordinal()) {
@@ -543,6 +545,8 @@ public class Main {
             processGetRooms(payloadBytes);
         } else if (responseType == ServerMessageType.ROOM_FULL.ordinal()) {
             processRoomFull(payloadBytes);
+        } else if (responseType == ServerMessageType.PLAYER_NOT_READY.ordinal()) {
+            processPlayerNotReady(payloadBytes);
         }
     }
 
@@ -638,6 +642,18 @@ public class Main {
         System.out.println("- Room Id: " + roomId);
     }
 
+    private void processStartGame(byte[] payloadBytes) throws Exception {
+        ServerStartGameDTO serverStartGameDTO = BinarySerializer.deserializeData(payloadBytes, ServerStartGameDTO.class);
+
+        System.out.println("[Start Game]");
+        printServerRoomPlayerDTOList(serverStartGameDTO.getPlayerList());
+    }
+
+    private void processMatchMaking(byte[] payloadBytes) throws Exception {
+        System.out.println("[Match Making]");
+        System.out.println("- Finding a player ...");
+    }
+
     private void processGetRoomInfo(byte[] payloadBytes) throws Exception {
         ServerGetRoomInfoDTO serverGetRoomInfoDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetRoomInfoDTO.class);
 
@@ -670,6 +686,11 @@ public class Main {
     private void processRoomFull(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
         System.out.println("- Room is full");
+    }
+
+    private void processPlayerNotReady(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- A Player is not ready");
     }
 
     private Thread createListenerThread() {
@@ -791,10 +812,16 @@ public class Main {
                 + " " + GameMode.fromShort(serverRoomDTO.getMode())
                 + " " + RoomType.fromShort(serverRoomDTO.getType())
         );
-        for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomDTO.getPlayerList()) {
+
+        printServerRoomPlayerDTOList(serverRoomDTO.getPlayerList());
+    }
+
+    private void printServerRoomPlayerDTOList(List<ServerRoomPlayerDTO> serverRoomPlayerDTOList) {
+        for (ServerRoomPlayerDTO serverRoomPlayerDTO : serverRoomPlayerDTOList) {
             System.out.println(
                     "+ " + serverRoomPlayerDTO.getPlayerId() + " "
                             + serverRoomPlayerDTO.getPlayerDisplayName() + " "
+                            + serverRoomPlayerDTO.getLevel() + " "
                             + PlayerRole.fromShort(serverRoomPlayerDTO.getPlayerRole()) + " "
                             + PlayerStatus.fromShort(serverRoomPlayerDTO.getPlayerStatus()));
         }
