@@ -15,4 +15,10 @@ import java.util.List;
 public class ServerStartGameDTO {
     @BinarySerializer.FieldOrder(0)
     private List<ServerRoomPlayerDTO> playerList;
+
+    @BinarySerializer.FieldOrder(1)
+    private String playerId;
+
+    @BinarySerializer.FieldOrder(2)
+    private List<String> playerIds;
 }

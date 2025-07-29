@@ -18,8 +18,8 @@ import java.util.*;
 
 // Test 2
 public class Main {
-    private static final String HOST = "localhost";
-    private static final int PORT = 9000;
+    private static final String HOST = MyConfig.host;
+    private static final int PORT = MyConfig.port;
 
     private String jwt = "";
     private String jwtReconnect = "";
@@ -43,6 +43,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         customFunctions();
+        MyConfig.anotherCustomFunctions();
 
         while (true) {
             System.out.print("Enter command: ");
@@ -179,7 +180,7 @@ public class Main {
     }
 
     public void handleRegister(String username, String password, String confirmPassword, String displayName) throws Exception {
-        URL url = new URL("http://localhost:8080/users/register");
+        URL url = new URL(MyConfig.register_url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("POST");
@@ -219,7 +220,7 @@ public class Main {
     }
 
     public void handleLogin(String username, String password) throws Exception {
-        URL url = new URL("http://localhost:8080/users/login");
+        URL url = new URL(MyConfig.login_url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("POST");
@@ -548,8 +549,6 @@ public class Main {
             processOnlyLeader(payloadBytes);
         } else if (responseType == ServerMessageType.GAME_STATE.ordinal()) {
             processGameState(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_PLAYER_ID.ordinal()) {
-            processGetPlayerId(payloadBytes);
         }
     }
 
@@ -650,6 +649,14 @@ public class Main {
 
         System.out.println("[Start Game]");
         printServerRoomPlayerDTOList(serverStartGameDTO.getPlayerList());
+
+        System.out.println("[Game Player Id]");
+        System.out.println("- Player Id: " + serverStartGameDTO.getPlayerId());
+
+        System.out.println("[Game Player List]");
+        for (String playerId : serverStartGameDTO.getPlayerIds()) {
+            System.out.println("- Player Id: " + playerId);
+        }
     }
 
     private void processMatchMaking(byte[] payloadBytes) throws Exception {
@@ -714,19 +721,6 @@ public class Main {
     private void processGameState(byte[] payloadBytes) throws Exception {
         System.out.println("[Game State]");
     }
-
-    private void processGetPlayerId(byte[] payloadBytes) throws Exception {
-        ServerPlayerIdDTO serverPlayerIdDTO = BinarySerializer.deserializeData(payloadBytes, ServerPlayerIdDTO.class);
-
-        System.out.println("[Game Player Id]");
-        System.out.println("- Player Id: " + serverPlayerIdDTO.getPlayerId());
-
-        System.out.println("[Game Player List]");
-        for (String playerId : serverPlayerIdDTO.getPlayerIds()) {
-            System.out.println("- Player Id: " + playerId);
-        }
-    }
-
 
     private Thread createListenerThread() {
         return new Thread(() -> {
