@@ -11,6 +11,6 @@ import org.example.utils.BinarySerializer;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServerAuthSuccessDTO {
-    @BinarySerializer.FieldOrder(1)
-    String reconnectToken;
+    @BinarySerializer.FieldOrder(0)
+    private String reconnectToken;
 }
