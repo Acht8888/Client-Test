@@ -90,6 +90,8 @@ public class BinarySerializer {
             out.writeShort(value != null ? (short) value : 0);
         } else if (type == float.class || type == Float.class) {
             out.writeFloat(value != null ? (float) value : 0f);
+        } else if (type == long.class || type == Long.class) {
+            out.writeLong(value != null ? (long) value : 0L);
         } else if (type == boolean.class || type == Boolean.class) {
             out.writeBoolean(value != null && (boolean) value);
         } else if (type == String.class) {  // Explicitly handle String type
@@ -142,6 +144,8 @@ public class BinarySerializer {
             return in.readShort();
         if (type == float.class || type == Float.class)
             return in.readFloat();
+        if (type == long.class || type == Long.class)
+            return in.readLong();
         if (type == boolean.class || type == Boolean.class)
             return in.readBoolean();
         if (type == String.class) {  // Explicitly handle String type
