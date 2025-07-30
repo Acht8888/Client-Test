@@ -104,6 +104,8 @@ public class BinarySerializer {
             } else {
                 out.writeShort(0);
             }
+
+//            out.writeUTF(value != null ? (String) value : "");
         } else if (type == UUID.class) {  // Handle UUID type
             UUID uuid = (UUID) value;
             out.writeShort((short)8);
@@ -155,6 +157,8 @@ public class BinarySerializer {
                 chars[i] = in.readChar();  // Read each character of the string
             }
             return new String(chars);  // Convert the char array to a String and return it
+
+//            return in.readUTF();
         }
         if (type == UUID.class) {  // Handle UUID type
             in.readShort();
