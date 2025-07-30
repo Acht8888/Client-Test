@@ -22,7 +22,6 @@ public class Main {
     private static final int PORT = MyConfig.port;
 
     private String jwt = "";
-    private String jwtReconnect = "";
 
     private static final Random random = new Random();
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -58,7 +57,7 @@ public class Main {
 
             try {
                 switch (command) {
-                    case "register":
+                    case "r":
                         String[] tokens = parts[1].split(" ");
                         String username = tokens[0];
                         String password = tokens[1];
@@ -67,7 +66,7 @@ public class Main {
 
                         handleRegister(username, password, confirmPassword, displayName);
                         break;
-                    case "login":
+                    case "l":
                         tokens = parts[1].split(" ");
                         username = tokens[0];
                         password = tokens[1];
@@ -78,43 +77,45 @@ public class Main {
                         handleAuthInstant();
                         break;
                     case "r_i":
-                        handleReconnectInstant();
+                        String jwtReconnect = parts[1];
+
+                        handleReconnectInstant(jwtReconnect);
                         break;
-                    case "get_user_info":
+                    case "g_u_i":
                         handleGetUserInfo();
                         break;
-                    case "get_user_by_id":
+                    case "g_u_b_i":
                         String userId = parts[1];
 
                         handleGetUserById(UUID.fromString(userId));
                         break;
-                    case "send_friend_request":
+                    case "s_f_r":
                         String targetId = parts[1];
 
                         handleFriendRequest(UUID.fromString(targetId));
                         break;
-                    case "accept_friend_request":
+                    case "a_f_r":
                         String requestId = parts[1];
 
                         handleAcceptFriendRequest(UUID.fromString(requestId));
                         break;
-                    case "decline_friend_request":
+                    case "d_f_r":
                         requestId = parts[1];
 
                         handleDeclineFriendRequest(UUID.fromString(requestId));
                         break;
-                    case "remove_friend":
+                    case "r_f":
                         requestId = parts[1];
 
                         handleRemoveFriend(UUID.fromString(requestId));
                         break;
-                    case "get_friend_requests":
+                    case "g_f_r":
                         handleGetFriendRequests();
                         break;
-                    case "get_friend_list":
+                    case "g_f_l":
                         handleGetFriendList();
                         break;
-                    case "create_room":
+                    case "c_r":
                         tokens = parts[1].split(" ");
                         String roomName = tokens[0];
                         String gameMode = tokens[1];
@@ -122,23 +123,23 @@ public class Main {
 
                         handleCreateRoomRequest(roomName, gameMode, roomType);
                         break;
-                    case "get_room_info":
+                    case "g_r_i":
                         handleGetRoomInfo();
                         break;
-                    case "get_room_by_id":
+                    case "g_r_b_i":
                         String roomId = parts[1];
 
                         handleGetRoomById(UUID.fromString(roomId));
                         break;
-                    case "get_all_rooms":
+                    case "g_a_r":
                         handleGetRoomsRequest();
                         break;
-                    case "join_room":
+                    case "j_r":
                         roomId = parts[1];
 
                         handleJoinRoomRequest(UUID.fromString(roomId));
                         break;
-                    case "leave_room":
+                    case "l_r":
                         handleLeaveRoomRequest();
                         break;
                     case "ready":
@@ -147,22 +148,22 @@ public class Main {
                     case "unready":
                         handleUnready();
                         break;
-                    case "start_game":
+                    case "s_g":
                         handleStartGame();
                         break;
-                    case "chat_to_user":
+                    case "c_t_u":
                         tokens = parts[1].split(" ", 2);
                         targetId = tokens[0];
                         String message = tokens[1];
 
                         handleChatUser(UUID.fromString(targetId), message);
                         break;
-                    case "chat_to_room":
+                    case "c_t_r":
                         message = parts[1];
 
                         handleChatRoom(message);
                         break;
-                    case "disconnect":
+                    case "d":
                         handleDisconnect();
                         break;
                     default:
@@ -274,7 +275,7 @@ public class Main {
         sendMessage(methodCode, serializedData);
     }
 
-    public void handleReconnectInstant() throws Exception {
+    public void handleReconnectInstant(String jwtReconnect) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.RECONNECT.ordinal();
@@ -557,8 +558,6 @@ public class Main {
 
         System.out.println("[Auth Success]");
         System.out.println("- Reconnect Token: " + serverAuthSuccessDTO.getReconnectToken());
-
-        this.jwtReconnect = serverAuthSuccessDTO.getReconnectToken();
     }
 
     private void processAuthFail(byte[] payloadBytes) throws Exception {
@@ -859,7 +858,6 @@ public class Main {
     private void customFunctions() throws Exception {
         handleLogin(MyConfig.username, MyConfig.password);
         handleAuthInstant();
-        handleReconnectInstant();
     }
 
 }
