@@ -1,5 +1,6 @@
 package org.example.utils;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -111,6 +112,10 @@ public class BinarySerializer {
             out.writeShort((short)8);
             out.writeLong(uuid.getMostSignificantBits());  // Write the most significant bits
             out.writeLong(uuid.getLeastSignificantBits());  // Write the least significant bits
+
+//            UUID uuid = (UUID) value;
+//            String uuidString = uuid.toString();  // Convert UUID to string
+//            out.writeUTF(uuidString);
         } else if (type.isArray()) {
             Object[] array = (Object[]) value;
             int length = (array != null) ? array.length : 0;
@@ -165,6 +170,9 @@ public class BinarySerializer {
             long mostSigBits = in.readLong();  // Read the most significant bits of UUID
             long leastSigBits = in.readLong();  // Read the least significant bits of UUID
             return new UUID(mostSigBits, leastSigBits);  // Return the UUID object
+
+//            String uuidString = in.readUTF();  // Read UUID as string
+//            return UUID.fromString(uuidString);  // Convert it back to UUID from string
         }
         if (type.isArray()) {
             short length = in.readShort();

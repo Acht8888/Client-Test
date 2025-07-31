@@ -1,115 +1,120 @@
 package org.example.enums;
 
-import java.util.Set;
+import lombok.Getter;
 
+@Getter
 public enum ServerMessageType {
-    // ===== Connection =====
-    AUTH_SUCCESS,
-    AUTH_FAIL,
-    TOKEN_EXPIRED,
-    SESSION_RESTORED,
+    // ===== Connection 100 =====
+    AUTH_SUCCESS(100),
+    AUTH_FAIL(101),
+    TOKEN_EXPIRED(102),
+    SESSION_RESTORED(103),
 
-    // ===== User Management =====
-    GET_USER_INFO,
-    GET_USER_BY_ID,
+    // ===== User Management 200 =====
+    GET_USER_INFO(200),
+    GET_USER_BY_ID(201),
 
-    // Game state sync
-    GAME_CREATED,
-    GAME_STATE,
-    PLAYER_JOINED,
-    PLAYER_LEFT,
-    OBJECT_SPAWNED,
-    OBJECT_DESTROYED,
-    WORLD_UPDATE,
-    MATCH_STARTED,
-    MATCH_ENDED,
+    // ===== Game State Sync 300 =====
+    GAME_CREATED(300),
+    GAME_STATE(301),
+    PLAYER_JOINED(302),
+    PLAYER_LEFT(303),
+    OBJECT_SPAWNED(304),
+    OBJECT_DESTROYED(305),
+    WORLD_UPDATE(306),
+    MATCH_STARTED(307),
+    MATCH_ENDED(308),
 
-    // Server instructions
-    FORCE_DISCONNECT,
-    ERROR_MESSAGE,
-    SERVER_NOTICE,
-    RECONNECT_PROMPT,
+    // ===== Server Instructions 400 =====
+    FORCE_DISCONNECT(400),
+    ERROR_MESSAGE(401),
+    SERVER_NOTICE(402),
+    RECONNECT_PROMPT(403),
 
-    // ===== Chat =====
-    CHAT_BROADCAST,
-    CHAT_TO_USER,
-    CHAT_TO_ROOM,
+    // ===== Chat 500 =====
+    CHAT_BROADCAST(500),
+    CHAT_TO_USER(501),
+    CHAT_TO_ROOM(502),
 
-    // ===== Friend System =====
-    GET_FRIEND_REQUESTS,
-    GET_FRIEND_LIST,
+    // ===== Friend System  600 =====
+    GET_FRIEND_REQUESTS(600),
+    GET_FRIEND_LIST(601),
 
-    // ===== Friend System Error =====
-    FRIEND_EXISTS,
+    // ===== Friend System Error 650 =====
+    FRIEND_EXISTS(650),
 
-    // ===== Room System =====
-    CREATE_ROOM,
-    START_GAME,
-    MATCH_MAKING,
-    GET_ROOM_INFO,
-    GET_ROOM_BY_ID,
-    GET_ALL_ROOMS,
+    // ===== Room System 700 =====
+    CREATE_ROOM(700),
+    JOIN_ROOM(701),
+    LEAVE_ROOM(702),
+    READY(703),
+    UNREADY(704),
+    START_GAME(705),
+    MATCH_MAKING(706),
+    GET_ROOM_INFO(707),
+    GET_ROOM_BY_ID(708),
+    GET_ALL_ROOMS(709),
 
-    // ===== Room System Error =====
-    ROOM_FULL,
-    PLAYER_NOT_READY,
-    IN_ROOM,
-    NOT_IN_ROOM,
-    ONLY_LEADER,
-    ROOM_INVALID_PASSWORD,
+    // ===== Room System Error 750 =====
+    ROOM_FULL(750),
+    PLAYER_NOT_READY(751),
+    IN_ROOM(752),
+    NOT_IN_ROOM(753),
+    ONLY_LEADER(754),
+    ROOM_INVALID_PASSWORD(755),
 
-    // Pings
-    PONG,
-    SERVER_TICK,
+    // ===== Pings 800 =====
+    PONG(800),
+    SERVER_TICK(801);
 
-    // Test
-    HELLO,
+    private final int messageCode;
 
-
-    ERROR;
-
-    /**
-     * Messages that should be sent to all connected clients
-     */
-    public static final Set<ServerMessageType> BROADCAST_MESSAGES = Set.of(
-            CHAT_BROADCAST, SERVER_NOTICE, WORLD_UPDATE, MATCH_STARTED, MATCH_ENDED
-    );
-
-    /**
-     * High priority messages that should be processed immediately
-     */
-    public static final Set<ServerMessageType> HIGH_PRIORITY = Set.of(
-            FORCE_DISCONNECT, ERROR_MESSAGE, TOKEN_EXPIRED, RECONNECT_PROMPT
-    );
-
-    /**
-     * Game state messages that need to be synchronized
-     */
-    public static final Set<ServerMessageType> GAME_STATE_MESSAGES = Set.of(
-            GAME_STATE, PLAYER_JOINED, PLAYER_LEFT, OBJECT_SPAWNED,
-            OBJECT_DESTROYED, WORLD_UPDATE, MATCH_STARTED, MATCH_ENDED
-    );
-
-    /**
-     * System/heartbeat messages
-     */
-    public static final Set<ServerMessageType> SYSTEM_MESSAGES = Set.of(
-            PONG, SERVER_TICK, FORCE_DISCONNECT, RECONNECT_PROMPT
-    );
-
-    public boolean isBroadcast() {
-        return BROADCAST_MESSAGES.contains(this);
+    ServerMessageType(int messageCode) {
+        this.messageCode = messageCode;
     }
 
-    public boolean isHighPriority() {
-        return HIGH_PRIORITY.contains(this);
-    }
-
-    public boolean isGameState() {
-        return GAME_STATE_MESSAGES.contains(this);
-    }
-
-    public boolean isSystemMessage() {
-        return SYSTEM_MESSAGES.contains(this);
-    }
+//    /**
+//     * Messages that should be sent to all connected clients
+//     */
+//    public static final Set<ServerMessageType> BROADCAST_MESSAGES = Set.of(
+//            CHAT_BROADCAST, SERVER_NOTICE, WORLD_UPDATE, MATCH_STARTED, MATCH_ENDED
+//    );
+//
+//    /**
+//     * High priority messages that should be processed immediately
+//     */
+//    public static final Set<ServerMessageType> HIGH_PRIORITY = Set.of(
+//            FORCE_DISCONNECT, ERROR_MESSAGE, TOKEN_EXPIRED, RECONNECT_PROMPT
+//    );
+//
+//    /**
+//     * Game state messages that need to be synchronized
+//     */
+//    public static final Set<ServerMessageType> GAME_STATE_MESSAGES = Set.of(
+//            GAME_STATE, PLAYER_JOINED, PLAYER_LEFT, OBJECT_SPAWNED,
+//            OBJECT_DESTROYED, WORLD_UPDATE, MATCH_STARTED, MATCH_ENDED
+//    );
+//
+//    /**
+//     * System/heartbeat messages
+//     */
+//    public static final Set<ServerMessageType> SYSTEM_MESSAGES = Set.of(
+//            PONG, SERVER_TICK, FORCE_DISCONNECT, RECONNECT_PROMPT
+//    );
+//
+//    public boolean isBroadcast() {
+//        return BROADCAST_MESSAGES.contains(this);
+//    }
+//
+//    public boolean isHighPriority() {
+//        return HIGH_PRIORITY.contains(this);
+//    }
+//
+//    public boolean isGameState() {
+//        return GAME_STATE_MESSAGES.contains(this);
+//    }
+//
+//    public boolean isSystemMessage() {
+//        return SYSTEM_MESSAGES.contains(this);
+//    }
 }

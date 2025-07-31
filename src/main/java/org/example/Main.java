@@ -533,6 +533,12 @@ public class Main {
             processChatRoom(payloadBytes);
         } else if (responseType == ServerMessageType.CREATE_ROOM.ordinal()) {
             processCreateRoom(payloadBytes);
+        } else if (responseType == ServerMessageType.READY.ordinal()) {
+            processReady(payloadBytes);
+        } else if (responseType == ServerMessageType.UNREADY.ordinal()) {
+            processUnready(payloadBytes);
+        } else if (responseType == ServerMessageType.LEAVE_ROOM.ordinal()) {
+            processLeaveRoom(payloadBytes);
         } else if (responseType == ServerMessageType.START_GAME.ordinal()) {
             processStartGame(payloadBytes);
         } else if (responseType == ServerMessageType.MATCH_MAKING.ordinal()) {
@@ -647,6 +653,27 @@ public class Main {
         System.out.println("[Created Room]");
         System.out.println("- Room Id: " + serverCreateRoomDTO.getRoomId());
         System.out.println("- Password: " + serverCreateRoomDTO.getPassword());
+    }
+
+    private void processReady(byte[] payloadBytes) throws Exception {
+        ServerReadyDTO serverReadyDTO = BinarySerializer.deserializeData(payloadBytes, ServerReadyDTO.class);
+
+        System.out.println("[Ready]");
+        System.out.println("- User Id: " + serverReadyDTO.getUserId());
+    }
+
+    private void processUnready(byte[] payloadBytes) throws Exception {
+        ServerUnreadyDTO serverUnreadyDTO = BinarySerializer.deserializeData(payloadBytes, ServerUnreadyDTO.class);
+
+        System.out.println("[Unready]");
+        System.out.println("- User Id: " + serverUnreadyDTO.getUserId());
+    }
+
+    private void processLeaveRoom(byte[] payloadBytes) throws Exception {
+        ServerLeaveRoomDTO serverLeaveRoomDTO = BinarySerializer.deserializeData(payloadBytes, ServerLeaveRoomDTO.class);
+
+        System.out.println("[Leave]");
+        System.out.println("- User Id: " + serverLeaveRoomDTO.getUserId());
     }
 
     private void processStartGame(byte[] payloadBytes) throws Exception {

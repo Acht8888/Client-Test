@@ -1,69 +1,76 @@
 package org.example.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum ClientMessageType {
-    // ===== Connection =====
-    AUTH_REQUEST,
-    RECONNECT,
-    DISCONNECT,
-    HEARTBEAT,
-    PING,
+    // ===== Connection 100 =====
+    AUTH_REQUEST(100),
+    RECONNECT(101),
+    DISCONNECT(102),
+    HEARTBEAT(103),
+    PING(104),
 
-    // ===== User Management =====
-    GET_USER_INFO,
-    GET_USER_BY_ID,
+    // ===== User Management 200 =====
+    GET_USER_INFO(200),
+    GET_USER_BY_ID(201),
 
-    // ===== Matchmaking =====
-    QUEUE_MATCH,
-    CANCEL_QUEUE,
-    MATCH_FOUND,
-    ACCEPT_MATCH,
-    REJECT_MATCH,
+    // ===== Matchmaking 300 =====
+    QUEUE_MATCH(300),
+    CANCEL_QUEUE(301),
+    MATCH_FOUND(302),
+    ACCEPT_MATCH(303),
+    REJECT_MATCH(304),
 
-    // ===== Room =====
-    CREATE_ROOM,
-    JOIN_ROOM,
-    LEAVE_ROOM,
-    READY,
-    UNREADY,
-    START_GAME,
-    GET_ROOM_INFO,
-    GET_ROOM_BY_ID,
-    GET_ALL_ROOMS,
+    // ===== Room 400 =====
+    CREATE_ROOM(400),
+    JOIN_ROOM(401),
+    LEAVE_ROOM(402),
+    READY(403),
+    UNREADY(404),
+    START_GAME(405),
+    GET_ROOM_INFO(406),
+    GET_ROOM_BY_ID(407),
+    GET_ALL_ROOMS(408),
 
-    // ===== Friend System =====
-    SEND_FRIEND_REQUEST,
-    ACCEPT_FRIEND_REQUEST,
-    DECLINE_FRIEND_REQUEST,
-    REMOVE_FRIEND,
-    GET_FRIEND_REQUESTS,
-    GET_FRIEND_LIST,
+    // ===== Friend System 500 =====
+    SEND_FRIEND_REQUEST(500),
+    ACCEPT_FRIEND_REQUEST(501),
+    DECLINE_FRIEND_REQUEST(502),
+    REMOVE_FRIEND(503),
+    GET_FRIEND_REQUESTS(504),
+    GET_FRIEND_LIST(505),
 
-    // ===== Player Actions =====
-    MOVE,
-    ATTACK,
-    DASH,
-    INTERACT,
-    CRAFT,
-    PICKUP_RESOURCE,
-    DROP_RESOURCE,
+    // ===== Player Actions 600 =====
+    MOVE(600),
+    ATTACK(601),
+    DASH(602),
+    INTERACT(603),
+    CRAFT(604),
+    PICKUP_RESOURCE(605),
+    DROP_RESOURCE(606),
 
-    // ===== Game Management =====
-    CREATE_GAME,
-    PAUSE_GAME,
-    RESUME_GAME,
-    SYNC_STATE,
-    REQUEST_GAME_STATE,
+    // ===== Game Management 700 =====
+    CREATE_GAME(700),
+    PAUSE_GAME(701),
+    RESUME_GAME(702),
+    SYNC_STATE(703),
+    REQUEST_GAME_STATE(704),
 
-    // ===== Post-game =====
-    SUBMIT_SCORE,
-    GET_RESULTS,
-    REPORT_PLAYER,
-    GIVE_FEEDBACK,
+    // ===== Post-game 800 =====
+    SUBMIT_SCORE(800),
+    GET_RESULTS(801),
+    REPORT_PLAYER(802),
+    GIVE_FEEDBACK(803),
 
-    // ===== Chat =====
-    CHAT_TO_USER,
-    CHAT_TO_ROOM,
+    // ===== Chat 900 =====
+    CHAT_TO_USER(900),
+    CHAT_TO_ROOM(901);
 
-    // ===== Test =====
-    HELLO
+    private final int messageCode;
+
+    ClientMessageType(int messageCode) {
+        this.messageCode = messageCode;
+    }
+
 }
