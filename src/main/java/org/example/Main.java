@@ -8,6 +8,7 @@ import org.example.enums.*;
 import org.example.utils.BinarySerializer;
 import org.example.utils.JsonUtils;
 
+import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.Socket;
@@ -35,6 +36,9 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Main client = new Main();
+
+        disableSslValidation();
+
         client.start();
     }
 
@@ -858,6 +862,23 @@ public class Main {
     private void customFunctions() throws Exception {
         handleLogin(MyConfig.username, MyConfig.password);
         handleAuthInstant();
+    }
+
+    public static void disableSslValidation() throws Exception {
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+                }
+        };
+
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+        HostnameVerifier allHostsValid = (hostname, session) -> true;
+        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
     }
 
 }
