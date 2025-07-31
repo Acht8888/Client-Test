@@ -19,4 +19,7 @@ public class ClientCreateRoomDTO {
 
     @BinarySerializer.FieldOrder(2)
     private short roomType;
+
+    @BinarySerializer.FieldOrder(3)
+    private String password;
 }

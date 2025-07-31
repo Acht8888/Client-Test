@@ -56,6 +56,7 @@ public enum ServerMessageType {
     IN_ROOM,
     NOT_IN_ROOM,
     ONLY_LEADER,
+    ROOM_INVALID_PASSWORD,
 
     // Pings
     PONG,

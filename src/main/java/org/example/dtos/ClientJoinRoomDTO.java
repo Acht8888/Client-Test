@@ -15,4 +15,7 @@ import java.util.UUID;
 public class ClientJoinRoomDTO {
     @BinarySerializer.FieldOrder(0)
     private UUID roomId;
+
+    @BinarySerializer.FieldOrder(1)
+    private String password;
 }

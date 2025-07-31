@@ -124,8 +124,9 @@ public class Main {
                         String roomName = tokens[0];
                         String gameMode = tokens[1];
                         String roomType = tokens[2];
+                        password = tokens.length > 3 ? tokens[3] : null;
 
-                        handleCreateRoomRequest(roomName, gameMode, roomType);
+                        handleCreateRoomRequest(roomName, gameMode, roomType, password);
                         break;
                     case "g_r_i":
                         handleGetRoomInfo();
@@ -139,9 +140,11 @@ public class Main {
                         handleGetRoomsRequest();
                         break;
                     case "j_r":
-                        roomId = parts[1];
+                        tokens = parts[1].split(" ");
+                        roomId = tokens[0];
+                        password = tokens.length > 1 ? tokens[1] : null;
 
-                        handleJoinRoomRequest(UUID.fromString(roomId));
+                        handleJoinRoomRequest(UUID.fromString(roomId), password);
                         break;
                     case "l_r":
                         handleLeaveRoomRequest();
@@ -376,7 +379,7 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    public void handleCreateRoomRequest(String roomName, String gameMode, String roomType) throws Exception {
+    public void handleCreateRoomRequest(String roomName, String gameMode, String roomType, String password) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.CREATE_ROOM.ordinal();
@@ -395,10 +398,8 @@ public class Main {
             roomTypeShort = 1;
         }
 
-        ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, gameModeShort, roomTypeShort);
-
+        ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, gameModeShort, roomTypeShort, password);
         byte[] serializedData = BinarySerializer.serializeData(clientCreateRoomDTO);
-
         sendMessage(methodCode, serializedData);
     }
 
@@ -430,12 +431,12 @@ public class Main {
         sendMessage(methodCode, new byte[0]);
     }
 
-    public void handleJoinRoomRequest(UUID roomId) throws Exception {
+    public void handleJoinRoomRequest(UUID roomId, String password) throws Exception {
         if (!ensureConnection()) return;
 
         short methodCode = (short) ClientMessageType.JOIN_ROOM.ordinal();
 
-        ClientJoinRoomDTO clientJoinRoomDTO = new ClientJoinRoomDTO(roomId);
+        ClientJoinRoomDTO clientJoinRoomDTO = new ClientJoinRoomDTO(roomId, password);
 
         byte[] serializedData = BinarySerializer.serializeData(clientJoinRoomDTO);
 
@@ -552,6 +553,8 @@ public class Main {
             processNotInRoom(payloadBytes);
         } else if (responseType == ServerMessageType.ONLY_LEADER.ordinal()) {
             processOnlyLeader(payloadBytes);
+        } else if (responseType == ServerMessageType.ROOM_INVALID_PASSWORD.ordinal()) {
+            processRoomInvalidPassword(payloadBytes);
         } else if (responseType == ServerMessageType.GAME_STATE.ordinal()) {
             processGameState(payloadBytes);
         }
@@ -641,10 +644,9 @@ public class Main {
     private void processCreateRoom(byte[] payloadBytes) throws Exception {
         ServerCreateRoomDTO serverCreateRoomDTO = BinarySerializer.deserializeData(payloadBytes, ServerCreateRoomDTO.class);
 
-        UUID roomId = serverCreateRoomDTO.getRoomId();
-
         System.out.println("[Created Room]");
-        System.out.println("- Room Id: " + roomId);
+        System.out.println("- Room Id: " + serverCreateRoomDTO.getRoomId());
+        System.out.println("- Password: " + serverCreateRoomDTO.getPassword());
     }
 
     private void processStartGame(byte[] payloadBytes) throws Exception {
@@ -719,6 +721,11 @@ public class Main {
     private void processOnlyLeader(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
         System.out.println("- Only leader can start game");
+    }
+
+    private void processRoomInvalidPassword(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- Invalid password for private room");
     }
 
     private void processGameState(byte[] payloadBytes) throws Exception {
