@@ -58,6 +58,9 @@ public enum ServerMessageType {
     GET_ROOM_INFO(707),
     GET_ROOM_BY_ID(708),
     GET_ALL_ROOMS(709),
+    SEND_ROOM_INVITE(710),
+    ACCEPT_ROOM_INVITE(711),
+    DECLINE_ROOM_INVITE(712),
 
     // ===== Room System Error 750 =====
     ROOM_FULL(750),

@@ -486,6 +486,8 @@ public class Main {
             processStartGame(payloadBytes);
         } else if (responseType == ServerMessageType.MATCH_MAKING) {
             processMatchMaking(payloadBytes);
+        } else if (responseType == ServerMessageType.SEND_ROOM_INVITE) {
+            processSendRoomInvite(payloadBytes);
         } else if (responseType == ServerMessageType.GET_ROOM_INFO) {
             processGetRoomInfo(payloadBytes);
         } else if (responseType == ServerMessageType.GET_ROOM_BY_ID) {
@@ -660,6 +662,14 @@ public class Main {
     private void processMatchMaking(byte[] payloadBytes) throws Exception {
         System.out.println("[Match Making]");
         System.out.println("- Finding a player ...");
+    }
+
+    private void processSendRoomInvite(byte[] payloadBytes) throws Exception {
+        ServerSendRoomInviteDTO serverSendRoomInviteDTO = BinarySerializer.deserializeData(payloadBytes, ServerSendRoomInviteDTO.class);
+
+        System.out.println("[Room Invite]");
+        System.out.println("- Room Id: " + serverSendRoomInviteDTO.getRoomId());
+        System.out.println("- Requester Display Name: " + serverSendRoomInviteDTO.getRequesterDisplayName());
     }
 
     private void processGetRoomInfo(byte[] payloadBytes) throws Exception {
