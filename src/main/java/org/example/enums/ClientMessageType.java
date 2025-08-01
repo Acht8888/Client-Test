@@ -73,4 +73,17 @@ public enum ClientMessageType {
         this.messageCode = messageCode;
     }
 
+    public static ClientMessageType fromMessageCode(short code) {
+        for (ClientMessageType type : ClientMessageType.values()) {
+            if (type.getMessageCode() == code) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Invalid message code: " + code);
+    }
+
+    public short getMessageCode() {
+        return (short) messageCode;
+    }
+
 }

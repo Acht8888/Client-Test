@@ -273,116 +273,79 @@ public class Main {
     public void handleAuthInstant() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.AUTH_REQUEST.ordinal();
-
         ClientAuthDTO clientAuthDTO = new ClientAuthDTO(jwt);
-
         byte[] serializedData = BinarySerializer.serializeData(clientAuthDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.AUTH_REQUEST, serializedData);
     }
 
     public void handleReconnectInstant(String jwtReconnect) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.RECONNECT.ordinal();
-        int messageId = random.nextInt(Integer.MAX_VALUE);
-
         ClientReconnectDTO clientReconnectDTO = new ClientReconnectDTO(jwt, jwtReconnect);
-
         byte[] serializedData = BinarySerializer.serializeData(clientReconnectDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.RECONNECT, serializedData);
     }
 
     public void handleGetUserInfo() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.GET_USER_INFO.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.GET_USER_INFO, new byte[0]);
     }
 
     public void handleGetUserById(UUID userId) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.GET_USER_BY_ID.ordinal();
-
         ClientGetUserByIdDTO clientGetUserByIdDTO = new ClientGetUserByIdDTO(userId);
-
         byte[] serializedData = BinarySerializer.serializeData(clientGetUserByIdDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.GET_USER_BY_ID, serializedData);
     }
 
     public void handleFriendRequest(UUID targetId) throws  Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.SEND_FRIEND_REQUEST.ordinal();
-
         ClientSendFriendRequestDTO clientSendFriendRequestDTO = new ClientSendFriendRequestDTO(targetId);
-
         byte[] serializedData = BinarySerializer.serializeData(clientSendFriendRequestDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.SEND_FRIEND_REQUEST, serializedData);
     }
 
     public void handleAcceptFriendRequest(UUID requestId) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.ACCEPT_FRIEND_REQUEST.ordinal();
-
         ClientAcceptFriendRequestDTO clientAcceptFriendRequestDTO = new ClientAcceptFriendRequestDTO(requestId);
-
         byte[] serializedData = BinarySerializer.serializeData(clientAcceptFriendRequestDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.ACCEPT_FRIEND_REQUEST, serializedData);
     }
 
     public void handleDeclineFriendRequest(UUID requestId) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.DECLINE_FRIEND_REQUEST.ordinal();
-
         ClientDeclineFriendRequestDTO clientDeclineFriendRequestDTO = new ClientDeclineFriendRequestDTO(requestId);
-
         byte[] serializedData = BinarySerializer.serializeData(clientDeclineFriendRequestDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.DECLINE_FRIEND_REQUEST, serializedData);
     }
 
     public void handleRemoveFriend(UUID requestId) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.REMOVE_FRIEND.ordinal();
-
         ClientRemoveFriendDTO clientRemoveFriendDTO = new ClientRemoveFriendDTO(requestId);
-
         byte[] serializedData = BinarySerializer.serializeData(clientRemoveFriendDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.REMOVE_FRIEND, serializedData);
     }
 
     public void handleGetFriendRequests() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.GET_FRIEND_REQUESTS.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.GET_FRIEND_REQUESTS, new byte[0]);
     }
 
     public void handleGetFriendList() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.GET_FRIEND_LIST.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.GET_FRIEND_LIST, new byte[0]);
     }
 
     public void handleCreateRoomRequest(String roomName, String gameMode, String roomType, String password) throws Exception {
         if (!ensureConnection()) return;
-
-        short methodCode = (short) ClientMessageType.CREATE_ROOM.ordinal();
 
         short gameModeShort = 0;
         if (gameMode.equalsIgnoreCase("co_op")) {
@@ -400,103 +363,75 @@ public class Main {
 
         ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, gameModeShort, roomTypeShort, password);
         byte[] serializedData = BinarySerializer.serializeData(clientCreateRoomDTO);
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.CREATE_ROOM, serializedData);
     }
 
     public void handleGetRoomInfo() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.GET_ROOM_INFO.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.GET_ROOM_INFO, new byte[0]);
     }
 
     public void handleGetRoomById(UUID roomId) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.GET_ROOM_BY_ID.ordinal();
-
         ClientGetRoomByIdDTO getRoomByIdDTO = new ClientGetRoomByIdDTO(roomId);
-
         byte[] serializedData = BinarySerializer.serializeData(getRoomByIdDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.GET_ROOM_BY_ID, serializedData);
     }
 
     public void handleGetRoomsRequest() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.GET_ALL_ROOMS.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.GET_ALL_ROOMS, new byte[0]);
     }
 
     public void handleJoinRoomRequest(UUID roomId, String password) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.JOIN_ROOM.ordinal();
-
         ClientJoinRoomDTO clientJoinRoomDTO = new ClientJoinRoomDTO(roomId, password);
-
         byte[] serializedData = BinarySerializer.serializeData(clientJoinRoomDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.JOIN_ROOM, serializedData);
     }
 
     public void handleLeaveRoomRequest() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.LEAVE_ROOM.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.LEAVE_ROOM, new byte[0]);
     }
 
     public void handleReady() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.READY.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.READY, new byte[0]);
     }
 
     public void handleUnready() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.UNREADY.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.UNREADY, new byte[0]);
     }
 
     public void handleStartGame() throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.START_GAME.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.START_GAME, new byte[0]);
     }
 
     public void handleChatUser(UUID targetId, String message) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.CHAT_TO_USER.ordinal();
-
         ClientChatUserDTO clientChatUserDTO = new ClientChatUserDTO(targetId, message);
-
         byte[] serializedData = BinarySerializer.serializeData(clientChatUserDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.CHAT_TO_USER, serializedData);
     }
 
     public void handleChatRoom(String message) throws Exception {
         if (!ensureConnection()) return;
 
-        short methodCode = (short) ClientMessageType.CHAT_TO_ROOM.ordinal();
-
         ClientChatRoomDTO clientChatRoomDTO = new ClientChatRoomDTO(message);
-
         byte[] serializedData = BinarySerializer.serializeData(clientChatRoomDTO);
-
-        sendMessage(methodCode, serializedData);
+        sendMessage(ClientMessageType.CHAT_TO_ROOM, serializedData);
     }
 
     public void handleDisconnect() throws Exception {
@@ -505,63 +440,69 @@ public class Main {
             return;
         }
 
-        short methodCode = (short) ClientMessageType.DISCONNECT.ordinal();
-
-        sendMessage(methodCode, new byte[0]);
+        sendMessage(ClientMessageType.DISCONNECT, new byte[0]);
 
         closeConnection();
     }
 
-    private void processServerMessage(short responseType, byte[] payloadBytes) throws Exception {
-        if (responseType == ServerMessageType.AUTH_SUCCESS.ordinal()) {
+    private void processServerMessage(ServerMessageType responseType, byte[] payloadBytes) throws Exception {
+        if (responseType == ServerMessageType.AUTH_SUCCESS) {
             processAuthSuccess(payloadBytes);
-        } else if (responseType == ServerMessageType.AUTH_FAIL.ordinal()) {
+        } else if (responseType == ServerMessageType.AUTH_FAIL) {
             processAuthFail(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_USER_INFO.ordinal()) {
+        } else if (responseType == ServerMessageType.GET_USER_INFO) {
             processGetUserInfo(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_USER_BY_ID.ordinal()) {
+        } else if (responseType == ServerMessageType.GET_USER_BY_ID) {
             processGetUserById(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_FRIEND_REQUESTS.ordinal()) {
+        } else if (responseType == ServerMessageType.GET_FRIEND_REQUESTS) {
             processGetFriendRequests(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_FRIEND_LIST.ordinal()) {
+        } else if (responseType == ServerMessageType.GET_FRIEND_LIST) {
             processGetFriendList(payloadBytes);
-        } else if (responseType == ServerMessageType.FRIEND_EXISTS.ordinal()) {
+        } else if (responseType == ServerMessageType.FRIEND_EXISTS) {
             processFriendExists(payloadBytes);
-        } else if (responseType == ServerMessageType.CHAT_TO_USER.ordinal()) {
+        } else if (responseType == ServerMessageType.SEND_FRIEND_REQUEST) {
+            processSendFriendRequest(payloadBytes);
+        } else if (responseType == ServerMessageType.ACCEPT_FRIEND_REQUEST) {
+            processAcceptFriendRequest(payloadBytes);
+        } else if (responseType == ServerMessageType.DECLINE_FRIEND_REQUEST) {
+            processDeclineFriendRequest(payloadBytes);
+        } else if (responseType == ServerMessageType.REMOVE_FRIEND) {
+            processRemoveFriend(payloadBytes);
+        } else if (responseType == ServerMessageType.CHAT_TO_USER) {
             processChatUser(payloadBytes);
-        } else if (responseType == ServerMessageType.CHAT_TO_ROOM.ordinal()) {
+        } else if (responseType == ServerMessageType.CHAT_TO_ROOM) {
             processChatRoom(payloadBytes);
-        } else if (responseType == ServerMessageType.CREATE_ROOM.ordinal()) {
+        } else if (responseType == ServerMessageType.CREATE_ROOM) {
             processCreateRoom(payloadBytes);
-        } else if (responseType == ServerMessageType.READY.ordinal()) {
+        } else if (responseType == ServerMessageType.READY) {
             processReady(payloadBytes);
-        } else if (responseType == ServerMessageType.UNREADY.ordinal()) {
+        } else if (responseType == ServerMessageType.UNREADY) {
             processUnready(payloadBytes);
-        } else if (responseType == ServerMessageType.LEAVE_ROOM.ordinal()) {
+        } else if (responseType == ServerMessageType.LEAVE_ROOM) {
             processLeaveRoom(payloadBytes);
-        } else if (responseType == ServerMessageType.START_GAME.ordinal()) {
+        } else if (responseType == ServerMessageType.START_GAME) {
             processStartGame(payloadBytes);
-        } else if (responseType == ServerMessageType.MATCH_MAKING.ordinal()) {
+        } else if (responseType == ServerMessageType.MATCH_MAKING) {
             processMatchMaking(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_ROOM_INFO.ordinal()) {
+        } else if (responseType == ServerMessageType.GET_ROOM_INFO) {
             processGetRoomInfo(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_ROOM_BY_ID.ordinal()) {
+        } else if (responseType == ServerMessageType.GET_ROOM_BY_ID) {
             processGetRoomById(payloadBytes);
-        } else if (responseType == ServerMessageType.GET_ALL_ROOMS.ordinal()) {
+        } else if (responseType == ServerMessageType.GET_ALL_ROOMS) {
             processGetRooms(payloadBytes);
-        } else if (responseType == ServerMessageType.ROOM_FULL.ordinal()) {
+        } else if (responseType == ServerMessageType.ROOM_FULL) {
             processRoomFull(payloadBytes);
-        } else if (responseType == ServerMessageType.PLAYER_NOT_READY.ordinal()) {
+        } else if (responseType == ServerMessageType.PLAYER_NOT_READY) {
             processPlayerNotReady(payloadBytes);
-        } else if (responseType == ServerMessageType.IN_ROOM.ordinal()) {
+        } else if (responseType == ServerMessageType.IN_ROOM) {
             processInRoom(payloadBytes);
-        } else if (responseType == ServerMessageType.NOT_IN_ROOM.ordinal()) {
+        } else if (responseType == ServerMessageType.NOT_IN_ROOM) {
             processNotInRoom(payloadBytes);
-        } else if (responseType == ServerMessageType.ONLY_LEADER.ordinal()) {
+        } else if (responseType == ServerMessageType.ONLY_LEADER) {
             processOnlyLeader(payloadBytes);
-        } else if (responseType == ServerMessageType.ROOM_INVALID_PASSWORD.ordinal()) {
+        } else if (responseType == ServerMessageType.ROOM_INVALID_PASSWORD) {
             processRoomInvalidPassword(payloadBytes);
-        } else if (responseType == ServerMessageType.GAME_STATE.ordinal()) {
+        } else if (responseType == ServerMessageType.GAME_STATE) {
             processGameState(payloadBytes);
         }
     }
@@ -607,6 +548,22 @@ public class Main {
     private void processFriendExists(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
         System.out.println("- Friend exists");
+    }
+
+    private void processSendFriendRequest(byte[] payloadBytes) throws Exception {
+        System.out.println("[Send Friend Request]");
+    }
+
+    private void processAcceptFriendRequest(byte[] payloadBytes) throws Exception {
+        System.out.println("[Accept Friend]");
+    }
+
+    private void processDeclineFriendRequest(byte[] payloadBytes) throws Exception {
+        System.out.println("[Decline Friend]");
+    }
+
+    private void processRemoveFriend(byte[] payloadBytes) throws Exception {
+        System.out.println("[Remove Friend]");
     }
 
     private void processGetUserInfo(byte[] payloadBytes) throws Exception {
@@ -791,7 +748,7 @@ public class Main {
                     System.out.println("- Status: " + statusCode);
                     System.out.println("- Payload Bytes: " + Arrays.toString(payloadBytes));
 
-                    processServerMessage(responseType, payloadBytes);
+                    processServerMessage(ServerMessageType.fromMessageCode(responseType), payloadBytes);
 
                     stopWork();
                 }
@@ -805,14 +762,14 @@ public class Main {
         });
     }
 
-    private void sendMessage(short methodCode, byte[] serializedData) throws Exception {
+    private void sendMessage(ClientMessageType methodCode, byte[] serializedData) throws Exception {
         System.out.println("Sending message");
 
         int totalLength = 2 + serializedData.length;    // length field = method code + data
 
         ByteBuffer buffer = ByteBuffer.allocate(totalLength + 2);   // totalLength + totalLength.size
         buffer.putShort((short) totalLength);
-        buffer.putShort(methodCode);
+        buffer.putShort(methodCode.getMessageCode());
         buffer.put(serializedData);
 
         System.out.println("Payload Bytes: " + Arrays.toString(buffer.array()));

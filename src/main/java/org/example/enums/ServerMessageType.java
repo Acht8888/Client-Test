@@ -39,6 +39,10 @@ public enum ServerMessageType {
     // ===== Friend System  600 =====
     GET_FRIEND_REQUESTS(600),
     GET_FRIEND_LIST(601),
+    SEND_FRIEND_REQUEST(602),
+    ACCEPT_FRIEND_REQUEST(603),
+    DECLINE_FRIEND_REQUEST(604),
+    REMOVE_FRIEND(605),
 
     // ===== Friend System Error 650 =====
     FRIEND_EXISTS(650),
@@ -71,6 +75,19 @@ public enum ServerMessageType {
 
     ServerMessageType(int messageCode) {
         this.messageCode = messageCode;
+    }
+
+    public static ServerMessageType fromMessageCode(short code) {
+        for (ServerMessageType type : ServerMessageType.values()) {
+            if (type.getMessageCode() == code) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Invalid message code: " + code);
+    }
+
+    public short getMessageCode() {
+        return (short) messageCode;
     }
 
 //    /**
