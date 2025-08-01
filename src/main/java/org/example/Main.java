@@ -158,6 +158,11 @@ public class Main {
                     case "s_g":
                         handleStartGame();
                         break;
+                    case "s_r_i":
+                        userId = parts[1];
+
+                        handleSendRoomInvite(UUID.fromString(userId));
+                        break;
                     case "c_t_u":
                         tokens = parts[1].split(" ", 2);
                         targetId = tokens[0];
@@ -416,6 +421,14 @@ public class Main {
         if (!ensureConnection()) return;
 
         sendMessage(ClientMessageType.START_GAME, new byte[0]);
+    }
+
+    public void handleSendRoomInvite(UUID userId) throws Exception {
+        if (!ensureConnection()) return;
+
+        ClientSendRoomInviteDTO clientSendRoomInviteDTO = new ClientSendRoomInviteDTO(userId);
+        byte[] serializedData = BinarySerializer.serializeData(clientSendRoomInviteDTO);
+        sendMessage(ClientMessageType.SEND_ROOM_INVITE, serializedData);
     }
 
     public void handleChatUser(UUID targetId, String message) throws Exception {
