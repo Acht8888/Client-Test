@@ -14,5 +14,5 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ServerJoinRoomDTO {
     @BinarySerializer.FieldOrder(0)
-    private UUID roomId;
+    private UUID userId;
 }

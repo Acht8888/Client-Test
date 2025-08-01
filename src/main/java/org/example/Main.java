@@ -478,6 +478,8 @@ public class Main {
             processReady(payloadBytes);
         } else if (responseType == ServerMessageType.UNREADY) {
             processUnready(payloadBytes);
+        } else if (responseType == ServerMessageType.JOIN_ROOM) {
+            processJoinRoom(payloadBytes);
         } else if (responseType == ServerMessageType.LEAVE_ROOM) {
             processLeaveRoom(payloadBytes);
         } else if (responseType == ServerMessageType.START_GAME) {
@@ -624,6 +626,13 @@ public class Main {
 
         System.out.println("[Unready]");
         System.out.println("- User Id: " + serverUnreadyDTO.getUserId());
+    }
+
+    private void processJoinRoom(byte[] payloadBytes) throws Exception {
+        ServerJoinRoomDTO serverJoinRoomDTO = BinarySerializer.deserializeData(payloadBytes, ServerJoinRoomDTO.class);
+
+        System.out.println("[Join]");
+        System.out.println("- User Id: " + serverJoinRoomDTO.getUserId());
     }
 
     private void processLeaveRoom(byte[] payloadBytes) throws Exception {
