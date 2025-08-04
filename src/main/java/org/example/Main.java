@@ -650,6 +650,8 @@ public class Main {
 
         System.out.println("[Join]");
         System.out.println("- User Id: " + serverJoinRoomDTO.getUserId());
+        System.out.println("- User Display Name: " + serverJoinRoomDTO.getUserDisplayName());
+
     }
 
     private void processLeaveRoom(byte[] payloadBytes) throws Exception {
