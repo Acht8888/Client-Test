@@ -33,8 +33,7 @@ public enum ClientMessageType {
     GET_ROOM_BY_ID(407),
     GET_ALL_ROOMS(408),
     SEND_ROOM_INVITE(409),
-    ACCEPT_ROOM_INVITE(410),
-    DECLINE_ROOM_INVITE(411),
+    GET_ROOM_BY_NAME(410),
 
     // ===== Friend System 500 =====
     SEND_FRIEND_REQUEST(500),

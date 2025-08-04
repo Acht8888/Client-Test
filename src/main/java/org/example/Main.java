@@ -139,6 +139,11 @@ public class Main {
                     case "g_a_r":
                         handleGetRoomsRequest();
                         break;
+                    case "g_r_b_n":
+                        String roomDisplayName = parts[1];
+
+                        handleGetRoomByName(roomDisplayName);
+                        break;
                     case "j_r":
                         tokens = parts[1].split(" ");
                         roomId = tokens[0];
@@ -391,6 +396,15 @@ public class Main {
         sendMessage(ClientMessageType.GET_ALL_ROOMS, new byte[0]);
     }
 
+    public void handleGetRoomByName(String roomDisplayName) throws Exception {
+        if (!ensureConnection()) return;
+
+        ClientGetRoomByNameDTO clientGetRoomByNameDTO = new ClientGetRoomByNameDTO(roomDisplayName);
+
+        byte[] serializedData = BinarySerializer.serializeData(clientGetRoomByNameDTO);
+        sendMessage(ClientMessageType.GET_ROOM_BY_NAME, serializedData);
+    }
+
     public void handleJoinRoomRequest(UUID roomId, String password) throws Exception {
         if (!ensureConnection()) return;
 
@@ -507,6 +521,8 @@ public class Main {
             processGetRoomById(payloadBytes);
         } else if (responseType == ServerMessageType.GET_ALL_ROOMS) {
             processGetRooms(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_ROOM_BY_NAME) {
+            processGetRoomByName(payloadBytes);
         } else if (responseType == ServerMessageType.ROOM_FULL) {
             processRoomFull(payloadBytes);
         } else if (responseType == ServerMessageType.PLAYER_NOT_READY) {
@@ -713,6 +729,17 @@ public class Main {
         List<ServerRoomDTO> serverRoomDTOList = serverGetAllRoomsDTO.getRoomList();
 
         System.out.println("[Rooms]");
+        for (ServerRoomDTO serverRoomDTO : serverRoomDTOList) {
+            printServerRoomDTO(serverRoomDTO);
+        }
+    }
+
+    private void processGetRoomByName(byte[] payloadBytes) throws Exception {
+        ServerGetRoomByNameDTO serverGetRoomByNameDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetRoomByNameDTO.class);
+
+        List<ServerRoomDTO> serverRoomDTOList = serverGetRoomByNameDTO.getRoomList();
+
+        System.out.println("[Get Room By Name]");
         for (ServerRoomDTO serverRoomDTO : serverRoomDTOList) {
             printServerRoomDTO(serverRoomDTO);
         }
