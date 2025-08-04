@@ -22,4 +22,8 @@ public class ServerFriendDTO {
 
     @BinarySerializer.FieldOrder(2)
     private String friendDisplayName;
+
+    @BinarySerializer.FieldOrder(3)
+    private boolean isOnline;
+
 }
