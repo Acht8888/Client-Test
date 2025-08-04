@@ -751,10 +751,7 @@ public class Main {
     }
 
     private void processAck(byte[] payloadBytes) throws Exception {
-        ServerAckDTO serverAckDTO = BinarySerializer.deserializeData(payloadBytes, ServerAckDTO.class);
-
         System.out.println("[Ack]");
-        System.out.println("- Server Message Type: " + serverAckDTO.getServerMessageType());
     }
 
     private Thread createListenerThread() {
