@@ -13,6 +13,7 @@ public enum ServerMessageType {
     // ===== User Management 200 =====
     GET_USER_INFO(200),
     GET_USER_BY_ID(201),
+    GET_USER_BY_USERNAME(202),
 
     // ===== Game State Sync 300 =====
     GAME_CREATED(300),

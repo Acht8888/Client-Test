@@ -14,6 +14,7 @@ public enum ClientMessageType {
     // ===== User Management 200 =====
     GET_USER_INFO(200),
     GET_USER_BY_ID(201),
+    GET_USER_BY_USERNAME(202),
 
     // ===== Matchmaking 300 =====
     QUEUE_MATCH(300),

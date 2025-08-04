@@ -93,6 +93,11 @@ public class Main {
 
                         handleGetUserById(UUID.fromString(userId));
                         break;
+                    case "g_u_b_u":
+                        username = parts[1];
+
+                        handleGetUserByUsername(username);
+                        break;
                     case "s_f_r":
                         String targetId = parts[1];
 
@@ -310,6 +315,14 @@ public class Main {
         sendMessage(ClientMessageType.GET_USER_BY_ID, serializedData);
     }
 
+    public void handleGetUserByUsername(String username) throws Exception {
+        if (!ensureConnection()) return;
+
+        ClientGetUserByUsernameDTO clientGetUserByUsernameDTO = new ClientGetUserByUsernameDTO(username);
+        byte[] serializedData = BinarySerializer.serializeData(clientGetUserByUsernameDTO);
+        sendMessage(ClientMessageType.GET_USER_BY_USERNAME, serializedData);
+    }
+
     public void handleFriendRequest(UUID targetId) throws  Exception {
         if (!ensureConnection()) return;
 
@@ -481,6 +494,8 @@ public class Main {
             processGetUserInfo(payloadBytes);
         } else if (responseType == ServerMessageType.GET_USER_BY_ID) {
             processGetUserById(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_USER_BY_USERNAME) {
+            processGetUserByUsername(payloadBytes);
         } else if (responseType == ServerMessageType.GET_FRIEND_REQUESTS) {
             processGetFriendRequests(payloadBytes);
         } else if (responseType == ServerMessageType.GET_FRIEND_LIST) {
@@ -612,6 +627,16 @@ public class Main {
     }
 
     private void processGetUserById(byte[] payloadBytes) throws Exception {
+        ServerUserDTO serverUserDTO = BinarySerializer.deserializeData(payloadBytes, ServerUserDTO.class);
+
+        System.out.println("[User Info]");
+        System.out.println("- Id: " + serverUserDTO.getId());
+        System.out.println("- Username: " + serverUserDTO.getUsername());
+        System.out.println("- Display Name: " + serverUserDTO.getDisplayName());
+        System.out.println("- Level: " + serverUserDTO.getLevel());
+    }
+
+    private void processGetUserByUsername(byte[] payloadBytes) throws Exception {
         ServerUserDTO serverUserDTO = BinarySerializer.deserializeData(payloadBytes, ServerUserDTO.class);
 
         System.out.println("[User Info]");
