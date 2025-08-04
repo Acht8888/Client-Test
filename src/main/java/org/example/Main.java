@@ -45,8 +45,8 @@ public class Main {
     public void start() throws Exception {
         Scanner scanner = new Scanner(System.in);
 
-        customFunctions();
-        MyConfig.anotherCustomFunctions();
+//        customFunctions();
+//        MyConfig.anotherCustomFunctions();
 
         while (true) {
             System.out.print("Enter command: ");
@@ -576,7 +576,7 @@ public class Main {
         System.out.println("[Friend List]");
 
         for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
-            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId() + " " + serverFriendDTO.getFriendDisplayName() + " " + serverFriendDTO.isOnline());
+            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId() + " " + serverFriendDTO.getFriendDisplayName());
         }
     }
 
