@@ -521,6 +521,8 @@ public class Main {
             processRoomInvalidPassword(payloadBytes);
         } else if (responseType == ServerMessageType.GAME_STATE) {
             processGameState(payloadBytes);
+        } else if (responseType == ServerMessageType.ACK) {
+            processAck(payloadBytes);
         }
     }
 
@@ -746,6 +748,13 @@ public class Main {
 
     private void processGameState(byte[] payloadBytes) throws Exception {
         System.out.println("[Game State]");
+    }
+
+    private void processAck(byte[] payloadBytes) throws Exception {
+        ServerAckDTO serverAckDTO = BinarySerializer.deserializeData(payloadBytes, ServerAckDTO.class);
+
+        System.out.println("[Ack]");
+        System.out.println("- Server Message Type: " + serverAckDTO.getServerMessageType());
     }
 
     private Thread createListenerThread() {
