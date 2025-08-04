@@ -45,8 +45,8 @@ public class Main {
     public void start() throws Exception {
         Scanner scanner = new Scanner(System.in);
 
-//        customFunctions();
-//        MyConfig.anotherCustomFunctions();
+        customFunctions();
+        MyConfig.anotherCustomFunctions();
 
         while (true) {
             System.out.print("Enter command: ");
