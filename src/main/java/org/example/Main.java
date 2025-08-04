@@ -576,7 +576,7 @@ public class Main {
         System.out.println("[Friend List]");
 
         for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
-            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId() + " " + serverFriendDTO.getFriendDisplayName());
+            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId() + " " + serverFriendDTO.getFriendDisplayName() + " " + serverFriendDTO.isOnline());
         }
     }
 
