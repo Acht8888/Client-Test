@@ -15,4 +15,7 @@ import java.util.UUID;
 public class ServerReadyDTO {
     @BinarySerializer.FieldOrder(0)
     private UUID userId;
+
+    @BinarySerializer.FieldOrder(1)
+    private String userDisplayName;
 }

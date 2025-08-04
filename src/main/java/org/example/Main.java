@@ -652,6 +652,7 @@ public class Main {
 
         System.out.println("[Ready]");
         System.out.println("- User Id: " + serverReadyDTO.getUserId());
+        System.out.println("- User Display Name: " + serverReadyDTO.getUserDisplayName());
     }
 
     private void processUnready(byte[] payloadBytes) throws Exception {
@@ -659,6 +660,7 @@ public class Main {
 
         System.out.println("[Unready]");
         System.out.println("- User Id: " + serverUnreadyDTO.getUserId());
+        System.out.println("- User Display Name: " + serverUnreadyDTO.getUserDisplayName());
     }
 
     private void processJoinRoom(byte[] payloadBytes) throws Exception {
@@ -675,6 +677,7 @@ public class Main {
 
         System.out.println("[Leave]");
         System.out.println("- User Id: " + serverLeaveRoomDTO.getUserId());
+        System.out.println("- User Display Name: " + serverLeaveRoomDTO.getUserDisplayName());
     }
 
     private void processStartGame(byte[] payloadBytes) throws Exception {
