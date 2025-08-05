@@ -39,5 +39,8 @@ public class ServerRoomDTO {
     @BinarySerializer.FieldOrder(6)
     private List<ServerRoomPlayerDTO> playerList;
 
+    @BinarySerializer.FieldOrder(7)
+    private int mapId;
+
 }
 

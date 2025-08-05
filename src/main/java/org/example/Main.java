@@ -387,7 +387,7 @@ public class Main {
             roomTypeShort = 1;
         }
 
-        ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, gameModeShort, roomTypeShort, password);
+        ClientCreateRoomDTO clientCreateRoomDTO = new ClientCreateRoomDTO(roomName, gameModeShort, roomTypeShort, password, 999);
         byte[] serializedData = BinarySerializer.serializeData(clientCreateRoomDTO);
         sendMessage(ClientMessageType.CREATE_ROOM, serializedData);
     }
@@ -946,6 +946,7 @@ public class Main {
                 + "/" + serverRoomDTO.getMaxPlayers()
                 + " " + GameMode.fromShort(serverRoomDTO.getMode())
                 + " " + RoomType.fromShort(serverRoomDTO.getType())
+                + " " + serverRoomDTO.getMapId()
         );
 
         printServerRoomPlayerDTOList(serverRoomDTO.getPlayerList());

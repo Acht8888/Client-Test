@@ -22,4 +22,7 @@ public class ClientCreateRoomDTO {
 
     @BinarySerializer.FieldOrder(3)
     private String password;
+
+    @BinarySerializer.FieldOrder(4)
+    private int mapId;
 }
