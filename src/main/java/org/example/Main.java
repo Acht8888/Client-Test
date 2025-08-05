@@ -564,6 +564,8 @@ public class Main {
             processOnlyLeader(payloadBytes);
         } else if (responseType == ServerMessageType.ROOM_INVALID_PASSWORD) {
             processRoomInvalidPassword(payloadBytes);
+        } else if (responseType == ServerMessageType.ROOM_NOT_EXIST) {
+            processRoomNotExist(payloadBytes);
         } else if (responseType == ServerMessageType.GAME_STATE) {
             processGameState(payloadBytes);
         } else if (responseType == ServerMessageType.ACK) {
@@ -815,6 +817,11 @@ public class Main {
     private void processRoomInvalidPassword(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
         System.out.println("- Invalid password for private room");
+    }
+
+    private void processRoomNotExist(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- Room not exist");
     }
 
     private void processGameState(byte[] payloadBytes) throws Exception {

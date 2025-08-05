@@ -69,6 +69,7 @@ public enum ServerMessageType {
     NOT_IN_ROOM(753),
     ONLY_LEADER(754),
     ROOM_INVALID_PASSWORD(755),
+    ROOM_NOT_EXIST(756),
 
     // ===== Pings 800 =====
     PONG(800),
