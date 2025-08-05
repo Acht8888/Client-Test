@@ -6,16 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.utils.BinarySerializer;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServerCreateRoomDTO {
+public class ServerAckDTO {
     @BinarySerializer.FieldOrder(0)
-    private UUID roomId;
-
-    @BinarySerializer.FieldOrder(1)
-    private UUID userId;
+    private short clientMessageType;
 }

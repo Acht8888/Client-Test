@@ -669,7 +669,7 @@ public class Main {
 
         System.out.println("[Created Room]");
         System.out.println("- Room Id: " + serverCreateRoomDTO.getRoomId());
-        System.out.println("- Password: " + serverCreateRoomDTO.getPassword());
+        System.out.println("- User Id: " + serverCreateRoomDTO.getUserId());
     }
 
     private void processReady(byte[] payloadBytes) throws Exception {
@@ -808,7 +808,10 @@ public class Main {
     }
 
     private void processAck(byte[] payloadBytes) throws Exception {
+        ServerAckDTO serverAckDTO = BinarySerializer.deserializeData(payloadBytes, ServerAckDTO.class);
+
         System.out.println("[Ack]");
+        System.out.println("- Client Message Type: " + serverAckDTO.getClientMessageType());
     }
 
     private Thread createListenerThread() {
