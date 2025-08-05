@@ -10,6 +10,7 @@ public enum ClientMessageType {
     DISCONNECT(102),
     HEARTBEAT(103),
     PING(104),
+    LOG_OUT(105),
 
     // ===== User Management 200 =====
     GET_USER_INFO(200),

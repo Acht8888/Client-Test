@@ -188,6 +188,9 @@ public class Main {
                     case "d":
                         handleDisconnect();
                         break;
+                    case "l_o":
+                        handleLogOut();
+                        break;
                     default:
                         System.out.println("Unknown command.");
                 }
@@ -481,6 +484,17 @@ public class Main {
         }
 
         sendMessage(ClientMessageType.DISCONNECT, new byte[0]);
+
+        closeConnection();
+    }
+
+    public void handleLogOut() throws Exception {
+        if (!connected) {
+            System.out.println("Not connected to server");
+            return;
+        }
+
+        sendMessage(ClientMessageType.LOG_OUT, new byte[0]);
 
         closeConnection();
     }
