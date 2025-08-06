@@ -719,6 +719,7 @@ public class Main {
         System.out.println("[Leave]");
         System.out.println("- User Id: " + serverLeaveRoomDTO.getUserId());
         System.out.println("- User Display Name: " + serverLeaveRoomDTO.getUserDisplayName());
+        System.out.println("- Leader Id: " + serverLeaveRoomDTO.getLeaderId());
     }
 
     private void processStartGame(byte[] payloadBytes) throws Exception {

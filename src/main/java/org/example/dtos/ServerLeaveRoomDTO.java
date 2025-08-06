@@ -18,4 +18,7 @@ public class ServerLeaveRoomDTO {
 
     @BinarySerializer.FieldOrder(1)
     private String userDisplayName;
+
+    @BinarySerializer.FieldOrder(2)
+    private UUID leaderId;
 }
