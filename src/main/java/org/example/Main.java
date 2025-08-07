@@ -124,6 +124,9 @@ public class Main {
                     case "g_f_l":
                         handleGetFriendList();
                         break;
+                    case "g_f_r_s":
+                        handleGetFriendRequestsSent();
+                        break;
                     case "c_r":
                         tokens = parts[1].split(" ");
                         String roomName = tokens[0];
@@ -370,6 +373,12 @@ public class Main {
         sendMessage(ClientMessageType.GET_FRIEND_LIST, new byte[0]);
     }
 
+    public void handleGetFriendRequestsSent() throws Exception {
+        if (!ensureConnection()) return;
+
+        sendMessage(ClientMessageType.GET_FRIEND_REQUESTS_SENT, new byte[0]);
+    }
+
     public void handleCreateRoomRequest(String roomName, String gameMode, String roomType, String password) throws Exception {
         if (!ensureConnection()) return;
 
@@ -514,6 +523,8 @@ public class Main {
             processGetFriendRequests(payloadBytes);
         } else if (responseType == ServerMessageType.GET_FRIEND_LIST) {
             processGetFriendList(payloadBytes);
+        } else if (responseType == ServerMessageType.GET_FRIEND_REQUESTS_SENT) {
+            processGetFriendRequestsSent(payloadBytes);
         } else if (responseType == ServerMessageType.FRIEND_EXISTS) {
             processFriendExists(payloadBytes);
         } else if (responseType == ServerMessageType.SEND_FRIEND_REQUEST) {
@@ -605,6 +616,18 @@ public class Main {
         List<ServerFriendDTO> serverFriendDTOList = serverGetFriendListDTO.getFriendList();
 
         System.out.println("[Friend List]");
+
+        for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
+            System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId() + " " + serverFriendDTO.getFriendDisplayName() + " " + serverFriendDTO.isOnline());
+        }
+    }
+
+    private void processGetFriendRequestsSent(byte[] payloadBytes) throws Exception {
+        ServerGetFriendRequestsSentDTO serverGetFriendRequestsSentDTO = BinarySerializer.deserializeData(payloadBytes, ServerGetFriendRequestsSentDTO.class);
+
+        List<ServerFriendDTO> serverFriendDTOList = serverGetFriendRequestsSentDTO.getFriendRequestList();
+
+        System.out.println("[Friend Requests Sent]");
 
         for (ServerFriendDTO serverFriendDTO : serverFriendDTOList) {
             System.out.println("- " + serverFriendDTO.getId() + " " + serverFriendDTO.getFriendId() + " " + serverFriendDTO.getFriendDisplayName() + " " + serverFriendDTO.isOnline());

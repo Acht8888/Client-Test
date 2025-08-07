@@ -44,6 +44,7 @@ public enum ClientMessageType {
     REMOVE_FRIEND(503),
     GET_FRIEND_REQUESTS(504),
     GET_FRIEND_LIST(505),
+    GET_FRIEND_REQUESTS_SENT(506),
 
     // ===== Player Actions 600 =====
     MOVE(600),
@@ -53,6 +54,9 @@ public enum ClientMessageType {
     CRAFT(604),
     PICKUP_RESOURCE(605),
     DROP_RESOURCE(606),
+    USE_SKILL_1(607),
+    USE_SKILL_2(608),
+    USE_SKILL_3(609),
 
     // ===== Game Management 700 =====
     CREATE_GAME(700),

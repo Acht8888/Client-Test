@@ -44,6 +44,7 @@ public enum ServerMessageType {
     ACCEPT_FRIEND_REQUEST(603),
     DECLINE_FRIEND_REQUEST(604),
     REMOVE_FRIEND(605),
+    GET_FRIEND_REQUESTS_SENT(606),
 
     // ===== Friend System Error 650 =====
     FRIEND_EXISTS(650),
