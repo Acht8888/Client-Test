@@ -45,6 +45,7 @@ public enum ClientMessageType {
     GET_FRIEND_REQUESTS(504),
     GET_FRIEND_LIST(505),
     GET_FRIEND_REQUESTS_SENT(506),
+    REMOVE_FRIEND_REQUEST(507),
 
     // ===== Player Actions 600 =====
     MOVE(600),

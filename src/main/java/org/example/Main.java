@@ -127,6 +127,11 @@ public class Main {
                     case "g_f_r_s":
                         handleGetFriendRequestsSent();
                         break;
+                    case "r_f_r":
+                        requestId = parts[1];
+
+                        handleRemoveFriendRequest(UUID.fromString(requestId));
+                        break;
                     case "c_r":
                         tokens = parts[1].split(" ");
                         String roomName = tokens[0];
@@ -379,6 +384,14 @@ public class Main {
         sendMessage(ClientMessageType.GET_FRIEND_REQUESTS_SENT, new byte[0]);
     }
 
+    public void handleRemoveFriendRequest(UUID requestId) throws Exception {
+        if (!ensureConnection()) return;
+
+        ClientRemoveFriendRequestDTO clientRemoveFriendRequestDTO = new ClientRemoveFriendRequestDTO(requestId);
+
+        sendMessage(ClientMessageType.REMOVE_FRIEND_REQUEST, BinarySerializer.serializeData(clientRemoveFriendRequestDTO));
+    }
+
     public void handleCreateRoomRequest(String roomName, String gameMode, String roomType, String password) throws Exception {
         if (!ensureConnection()) return;
 
@@ -527,6 +540,8 @@ public class Main {
             processGetFriendRequestsSent(payloadBytes);
         } else if (responseType == ServerMessageType.FRIEND_EXISTS) {
             processFriendExists(payloadBytes);
+        } else if (responseType == ServerMessageType.NOT_PENDING_REQUEST) {
+            processNotPendingRequest(payloadBytes);
         } else if (responseType == ServerMessageType.SEND_FRIEND_REQUEST) {
             processSendFriendRequest(payloadBytes);
         } else if (responseType == ServerMessageType.ACCEPT_FRIEND_REQUEST) {
@@ -637,6 +652,11 @@ public class Main {
     private void processFriendExists(byte[] payloadBytes) throws Exception {
         System.out.println("[Error]");
         System.out.println("- Friend exists");
+    }
+
+    private void processNotPendingRequest(byte[] payloadBytes) throws Exception {
+        System.out.println("[Error]");
+        System.out.println("- Not Pending Request");
     }
 
     private void processSendFriendRequest(byte[] payloadBytes) throws Exception {

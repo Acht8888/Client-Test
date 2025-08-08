@@ -48,6 +48,7 @@ public enum ServerMessageType {
 
     // ===== Friend System Error 650 =====
     FRIEND_EXISTS(650),
+    NOT_PENDING_REQUEST(651),
 
     // ===== Room System 700 =====
     CREATE_ROOM(700),
